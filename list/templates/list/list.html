@@ -1,0 +1,21 @@
+{% extends 'list/base.html' %}
+
+{% block content %}
+<div class="card-deck">
+  {% for blist in blists %}
+  <div class="card">
+      <a href="{% url 'list_view' pk=board.pk %}">
+          <div class="card-header">
+              {{ blist.title }}
+              {{ blist.pk }}
+          </div>
+      </a>
+  </div>
+{% endfor %}
+<div class="card">
+    <div class="card-body">
+      Add
+    </div>
+  </div>
+</div>
+{% endblock %}
