@@ -4,10 +4,9 @@
 <div class="card-deck">
   {% for blist in blists %}
   <div class="card">
-      <a href="{% url 'list_view' pk=blist.pk %}">
-          <div class="card-header">
+      <a href="{% url 'list_view' title=blist.title %}">
+          <div class="card-header" style="height: initial;">
               {{ blist.title }}
-              {{ blist.pk }}
           </div>
       </a>
   </div>

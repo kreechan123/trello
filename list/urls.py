@@ -7,6 +7,6 @@ from list.views import LoginView, DashboardView, LogoutView, BoardlistView
 urlpatterns = [
     path('', LoginView.as_view(), name="index"),
     path('boards/',DashboardView.as_view(), name="dashboard_view"),
-    path('logouts/',LogoutView.as_view(), name="logout"),
-    path('b/<int:pk>',BoardlistView.as_view(), name="list_view"),
+    path('logout/',LogoutView.as_view(), name="logout"),
+    path('boards/<str:title>',BoardlistView.as_view(), name="list_view"),
 ]

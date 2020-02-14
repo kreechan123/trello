@@ -3,8 +3,10 @@ from .models import Boardlist,Board, BoardMember, Card
 from django.utils import timezone
 from django.views.generic.base import TemplateView
 from django.contrib.auth import authenticate,login,logout
-from .forms import LoginForm
+from .forms import LoginForm, CreateBoardForm
 from .mixins import LoggedInAuthMixin
+from django.http import HttpResponse, HttpResponseRedirect
+
 
 class LoginView(LoggedInAuthMixin,TemplateView):
     template_name = 'list/login.html'
@@ -36,15 +38,33 @@ class LogoutView(TemplateView):
     
 class DashboardView(TemplateView):
     template_name = "list/dashboard.html"
+    form = CreateBoardForm
 
     def get(self, *args, **kwargs):
         boards = Board.objects.all()
-        return render(self.request, self.template_name, {'boards': boards})
+        form = CreateBoardForm()
+        return render(self.request, self.template_name, {'boards': boards,'form':form})
+
+    def post(self, *args, **kwargs):
+        boards = Board.objects.all()
+        if self.request.method == 'POST':
+            form = CreateBoardForm(self.request.POST)
+            if form.is_valid():
+                add = form.save(commit=False)
+                add.owner = self.request.user
+                add.save()
+                # return render(self.request, self.template_name, {'boards': boards, 'form':form})
+                return HttpResponseRedirect("/")
+        else:
+            form = CreateBoardForm()
+
+        return render(self.request, self.template_name, {'form':form})
 
 class BoardlistView(TemplateView):
     template_name = "list/list.html"
 
     def get(self, *args, **kwargs):
-        ck = pk
-        blists = Boardlist.objects.select_related().filter(board_id=2)
-        return render(self.request, self.template_name, {'blists': blists})     
+        title = kwargs.get('title')
+        blists = Boardlist.objects.filter(board__title=title)
+        return render(self.request, self.template_name, {'blists': blists})
+        
