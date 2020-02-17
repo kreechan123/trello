@@ -3,9 +3,10 @@ from .models import Boardlist,Board, BoardMember, Card
 from django.utils import timezone
 from django.views.generic.base import TemplateView
 from django.contrib.auth import authenticate,login,logout
-from .forms import LoginForm, CreateBoardForm
-from .mixins import LoggedInAuthMixin
 from django.http import HttpResponse, HttpResponseRedirect
+
+from .forms import LoginForm, CreateBoardForm, AddListForm
+from .mixins import LoggedInAuthMixin
 
 
 class LoginView(LoggedInAuthMixin,TemplateView):
@@ -46,14 +47,12 @@ class DashboardView(TemplateView):
         return render(self.request, self.template_name, {'boards': boards,'form':form})
 
     def post(self, *args, **kwargs):
-        boards = Board.objects.all()
         if self.request.method == 'POST':
             form = CreateBoardForm(self.request.POST)
             if form.is_valid():
                 add = form.save(commit=False)
                 add.owner = self.request.user
                 add.save()
-                # return render(self.request, self.template_name, {'boards': boards, 'form':form})
                 return HttpResponseRedirect("/")
         else:
             form = CreateBoardForm()
@@ -66,5 +65,24 @@ class BoardlistView(TemplateView):
     def get(self, *args, **kwargs):
         title = kwargs.get('title')
         blists = Boardlist.objects.filter(board__title=title)
-        return render(self.request, self.template_name, {'blists': blists})
-        
+        clists = Card.objects.all()
+        form = AddListForm()
+        return render(self.request, self.template_name, {'blists': blists, 'clists': clists, 'form': form})
+
+    def post(self, *args, **kwargs):
+        q = kwargs.get('title')
+        form = AddListForm(self.request.POST)
+        if form.is_valid():
+            add = form.save(commit=False)
+            add.board = Board.objects.get(title=q)
+            add.save()
+            return HttpResponseRedirect(self.request.path_info)
+        return render(self.request, self.template_name, {'form':form})
+
+
+class CardView(TemplateView):
+     template_name = "list/list.html"
+
+     def get(self, *args, **kwargs):
+        cards = Card.objects.all()
+        return render(self.request, self.template_name, {'cards': cards})

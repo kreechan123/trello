@@ -1,0 +1,55 @@
+.row > div[class*='col-'] {
+    display: flex;
+    flex:1 0 auto;
+  }
+  .card-header{
+    height: 9em;
+  }
+  .card-deck .card{
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  a{
+    text-decoration: none !important;
+  }
+  .card-list{
+    padding: 5px;
+    background-color: rgba(0,0,0,.03);
+  }
+  .card-list a{
+    color: inherit;
+    display: block;
+    padding: 2px 3px;
+    border: 1px solid inherit;
+    border-radius: 2px;
+    background-color:#fff;
+    margin: 2px 0;
+  }
+  .contenteditable-hd, .contenteditable-ft{
+    border-bottom: none;
+    border-top: none;
+  }
+  .add-list{
+    width: 200px;
+    color: #fff;
+    background-color: #d3d3d3a1;
+    padding: 18px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    border: 1px solid #c1c1c1d1;
+  }
+  .add-list:focus{
+    outline: none;
+  }
+
+  .addlistbtn{
+    height: auto;
+  }
+  .addhdn .btn, .addhdn input{
+    margin: 8px 0;
+  }
+  .addhdn input{
+    border: 1px solid #d8d8d8;
+    border-radius: 3px;
+    padding: 10px;
+  }

@@ -3,6 +3,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+# from list.models import Boardlist, Board, BoardMember, Card
+
 
 class Board(models.Model):
     title = models.CharField(max_length=200)
@@ -15,7 +17,7 @@ class Board(models.Model):
         return self.title
 
 class Boardlist(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200)    
     archived = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -35,8 +37,8 @@ class Card(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(max_length=200, null=True)
     image = models.FileField(upload_to='uploads/', null=True)
-    group = models.ForeignKey(Boardlist, on_delete=models.CASCADE, null=True)
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, null=True)
+    board = models.ForeignKey(Boardlist, on_delete=models.CASCADE, null=True)
+    #group = models.ForeignKey(Board, on_delete=models.CASCADE, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
