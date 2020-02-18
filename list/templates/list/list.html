@@ -1,7 +1,7 @@
 {% extends 'list/base.html' %}
 
 {% block content %}
-<div class="card-deck">
+<div class="card-deck card-deck-list">
   {% for blist in blists %}
   <div class="card card-list">
         <div class="card-header contenteditable-hd" style="height: initial;" contenteditable="true">
@@ -10,22 +10,32 @@
         <div class="card-body card-list">
             {% for clist in clists %}
                 {% if blist.id == clist.board_id %}
-                    <a href="{% url 'card_view' id=clist.id %}" data-toggle="modal" data-target="#cardmodal">{{ clist.title}} - {{ clist.id}}</a>
+                    <a href="{% url 'card_view' id=clist.id %}" data-toggle="modal" data-target="#cardmodal">{{ clist.title}}</a>
                 {% endif %}
             {% endfor %}
           </div>
-        <div class="card-footer contenteditable-ft">Add another card</div>
+        <!-- <div class="card-footer contenteditable-ft">Add another card</div> -->
+        <div class="subcard">
+    
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="text" value="{{ blist.id }}" hidden>
+                <input name="addcard" id="" cols="10" rows="50"  placeholder="Enter a title for this card…" style="height: 54px;">
+                <button class="btn btn-success" type="submit" name="get_card">Add Card</button>
+            </form>
+        </div>
+        
   </div>
 {% endfor %}
 <div class="addlistbtn">
-    <button href="" id="addlist" class="add-list">Add another list</button>
+    <!-- <button href="" id="addlist" class="add-list">Add another list</button> -->
     <div class="addhdn">
         <!-- <input type="text" placeholder="Title"><br> -->
         <form action="" method="POST">
             {% csrf_token %}
             {{ form.title }}
-
-            <button type="submit" class="btn btn-success">Add List</button>
+            <br>
+            <button type="submit" class="btn btn-success btn-card">Add List</button>
         </form>
     </div>
 </div>

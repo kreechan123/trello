@@ -1,5 +1,5 @@
 from django import forms
-from .models import Board, Boardlist
+from .models import Board, Boardlist, Card
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=200)
@@ -13,4 +13,9 @@ class CreateBoardForm(forms.ModelForm):
 class AddListForm(forms.ModelForm):
         class Meta:
             model = Boardlist
+            fields = ('title',)
+
+class AddCardForm(forms.ModelForm):
+        class Meta:
+            model = Card
             fields = ('title',)

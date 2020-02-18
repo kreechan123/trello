@@ -12,18 +12,26 @@
   a{
     text-decoration: none !important;
   }
-  .card-list{
-    padding: 5px;
-    background-color: rgba(0,0,0,.03);
+  .card{
+    border: none;
   }
-  .card-list a{
+  .card-body{
+    padding: 0.35rem;
+  }
+  .card-list{
+    background-color: rgba(0,0,0,.03);
+    min-width: 15rem;
+    max-width: 15rem;
+  }
+  .card-list a, .card-list textarea{
     color: inherit;
     display: block;
-    padding: 2px 3px;
-    border: 1px solid inherit;
+    padding: 4.9px 6px;
     border-radius: 2px;
-    background-color:#fff;
-    margin: 2px 0;
+    background-color: #fff;
+    margin: 9px 0;
+    box-shadow: 0px 0.3px 0px #151515;
+    font-size: 14px;
   }
   .contenteditable-hd, .contenteditable-ft{
     border-bottom: none;
@@ -52,4 +60,31 @@
     border: 1px solid #d8d8d8;
     border-radius: 3px;
     padding: 10px;
+  }
+  .subcard{
+    padding: 0.35rem;
+    background-color: #efefef;
+  }
+  .subcard form input{
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #00000026;
+    height: 54px;
+    margin: 2px 0 10px;
+    padding: 10px;
+  }
+
+  .lists {
+    display: flex;
+  }
+  .list-container {
+    width: 200px;
+    min-height: 300px;
+    border: 1px solid #ccc;
+    margin: 0 20px 0 0;
+    padding: 8px 10px;
+  }
+  .list-container p{
+    display: inline-block;
+    width: 100%;
   }

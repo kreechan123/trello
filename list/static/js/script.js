@@ -1,13 +1,33 @@
-$(document).ready(function() {
-    $('#MyModal').on('click', function(){
-      $('#MyModal').modal('show');
+(function(){
+  'use strict';
+
+  var id = $('#lists').data('board');
+  var lists_url =  `/board/${id}/lists/`;
+  $.ajax({
+    url: lists_url
+  }).done(function(response){
+    $('#lists').append(response);
+    viewCards();
+  });
+
+  function viewCards() {
+    $( ".list-container" ).each(function( index ) {
+      var elem = $(this);
+      console.log(elem.data('list-id'));
+      var list_id = elem.data('list-id');
+      var cards_url =  `/board/${id}/lists/${list_id}/cards`;
+      //  console.log(list_id);
+      $.ajax({  
+        url: cards_url,
+      }).done(function(response) {
+        $('#cards').append(response);
+      });
     });
-    $('.contenteditable').on('focusout', function(){
-      var x = $(this).html();
-      console.log(x);
-    });
-    // $('#addlist').on('click', function(){
-    //     $('.addhdn').toggle('hide')
-        
-    // })
-  }) //doc.ready closing tag
+  }
+
+  // var elem = $(this);
+  // console.log(elem.data('list-id'));
+
+})();
+
+

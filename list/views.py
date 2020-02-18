@@ -1,11 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect,Http404
 from .models import Boardlist,Board, BoardMember, Card
 from django.utils import timezone
 from django.views.generic.base import TemplateView
 from django.contrib.auth import authenticate,login,logout
 from django.http import HttpResponse, HttpResponseRedirect
 
-from .forms import LoginForm, CreateBoardForm, AddListForm
+from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm
 from .mixins import LoggedInAuthMixin
 
 
@@ -70,19 +70,71 @@ class BoardlistView(TemplateView):
         return render(self.request, self.template_name, {'blists': blists, 'clists': clists, 'form': form})
 
     def post(self, *args, **kwargs):
-        q = kwargs.get('title')
+        title = kwargs.get('title')
         form = AddListForm(self.request.POST)
         if form.is_valid():
             add = form.save(commit=False)
-            add.board = Board.objects.get(title=q)
+            add.board = Board.objects.get(title=title)
             add.save()
             return HttpResponseRedirect(self.request.path_info)
         return render(self.request, self.template_name, {'form':form})
 
 
 class CardView(TemplateView):
-     template_name = "list/list.html"
+    template_name = "list/list.html"
 
-     def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):
         cards = Card.objects.all()
-        return render(self.request, self.template_name, {'cards': cards})
+        form = AddCardForm()
+        return render(self.request, self.template_name, {'cards': cards, 'form':form})
+
+    def get_card(self, *args, **kwargs):
+        print("ini")
+        form = AddCardForm(self.request.POST, prefix='addcard')
+        if form.is_valid():
+            add = form.save(commit=False)
+            add.board = Boardlist.objects.get(title=q)
+            add.save()
+            print('valid')
+            return HttpResponseRedirect(self.request.path_info)
+        return render(self.request, self.template_name, {'form':form})
+
+
+
+class DashBoardView(TemplateView):
+    template_name = 'board/dashb.html'
+    
+    def get(self, *args, **kwargs):
+        boards = Board.objects.all()
+        return render(self.request, self.template_name, {'boards':boards})
+
+class BoardDetailView(TemplateView):
+    """ View for retreiving board detail 
+    """
+    template_name = 'board/detail.html'
+
+    def get(self, *args, **kwargs):
+        board = get_object_or_404(Board, id=kwargs.get('id'))
+        return render(self.request, self.template_name, {'board': board})
+
+class BoardListView(TemplateView):
+    """ View for retreiving the lists of Board lists
+    """
+    template_name = 'board/list.html'
+
+    def get(self, *args, **kwargs):
+        # board = get_object_or_404(Board, id=kwargs.get('id'))
+        # if not  self.request.is_ajax():
+        #     raise Http404
+        board_id = kwargs.get('id')
+        lists = Boardlist.objects.filter(board__id=board_id)
+        return render(self.request, self.template_name, {'blists': lists})
+
+class CardDetail(TemplateView):
+    template_name = 'board/cardb.html'
+
+    def get(self, *args, **kwargs):
+        board_id = kwargs.get('board_id') #3
+        list_id = kwargs.get('list_id') #1
+        cards = Card.objects.filter(board__id=list_id)
+        return render(self.request, self.template_name, {'cards':cards})

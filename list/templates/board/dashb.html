@@ -1,0 +1,30 @@
+{% extends 'list/base.html' %}
+
+{%  block content %}
+<div class="container">
+    <div class="row">
+        <div class="col col-md-3">
+            {% if user.is_authenticated %}
+            Side Menu
+            {% endif %}
+        </div>
+        <div class="col col-md-9">
+            <div class="card-deck">
+            {% for board in boards %}
+            <div class="col col-md-3">
+                <div class="card">
+                    <a href="{% url 'detail' id=board.id %}">
+                        <div class="card-header">
+                            {{ board.title }}
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+            <button type="button" class="card" data-toggle="modal" data-target="#exampleModal">Create Board</button> 
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
