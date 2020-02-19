@@ -8,7 +8,8 @@
     </head>
     <body>
       <nav class="navbar navbar-dark bg-dark">
-        <a href="{% url 'index' %}" class="navbar-brand">Trello</a>
+        <a href="{% url 'dashboard' %}" class="navbar-brand">Trello</a>
+        <a href="{% url 'index' %}" class="navbar-brand">Trellos</a>
         <form class="form-inline">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <div class="btn-group" role="group" aria-label="Basic example">
@@ -40,4 +41,5 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="{% static 'js/script.js' %} "></script>
+    <script src="{% static 'js/handlers.js' %} "></script>
 </html>

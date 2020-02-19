@@ -3,11 +3,24 @@
 {%  block content %}
 
 
-<div class="row">
-    <div class="col-md-12">
-            <div id="lists" class="lists" data-board="{{ board.id }}">
-                <!-- data goes here -->
-            </div>
+<div id="lists" class="lists card-deck card-deck-list" data-board="{{ board.id }}">
+    <!-- data goes here -->
+</div>
+<div class="subcard">
+
+    <div class="addlistbtn">
+        <!-- <button href="" id="addlist" class="add-list">Add another list</button> -->
+        <div class="addhdn">
+            <!-- <input type="text" placeholder="Title"><br> -->
+
+            <form action="{% url 'detail' board.id %}" method="POST" id="addlistform">
+                {% csrf_token %}
+                {{ form.title }}
+                <br>
+                <button type="submit" class="btn btn-success btn-card">Add List</button>
+            </form>
+
+        </div>
     </div>
 </div>
 

@@ -1,5 +1,12 @@
 
 {% for list in blists %}
-    <div id="cards" class="list-container" data-list-id="{{ list.id }}">{{ list.title }} - {{ list.id }}</div>
+    <div class="card card-list list-container" data-list-id="{{ list.id }}">{{ list.title }} 
+        <a href="#" class="www" data-id="{{list.id}}" data-url="{% url 'list_delete' list.id %}">X</a>
+    </div>
 {% endfor %}
-
+<!-- 
+<script>
+    $('.card').on('click', function(){
+      console.log('card clicked')
+    });
+</script> -->

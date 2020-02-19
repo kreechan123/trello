@@ -3,10 +3,12 @@ from .models import Boardlist,Board, BoardMember, Card
 from django.utils import timezone
 from django.views.generic.base import TemplateView
 from django.contrib.auth import authenticate,login,logout
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
 from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm
 from .mixins import LoggedInAuthMixin
+from django.core import serializers
+
 
 
 class LoginView(LoggedInAuthMixin,TemplateView):
@@ -115,7 +117,30 @@ class BoardDetailView(TemplateView):
 
     def get(self, *args, **kwargs):
         board = get_object_or_404(Board, id=kwargs.get('id'))
-        return render(self.request, self.template_name, {'board': board})
+        form = AddListForm()
+        return render(self.request, self.template_name, {'board': board, 'form':form})
+
+    def post(self, *args, **kwargs):
+        id = kwargs.get('id')
+        form = AddListForm(self.request.POST)
+        if form.is_valid():
+            add = form.save(commit=False)
+            add.board = Board.objects.get(id=id)
+            add.save()
+            
+            serialized_object = serializers.serialize('json', [add,])
+            return JsonResponse(serialized_object, safe=False)
+            
+        return render(self.request, self.template_name, {'form':form,})
+
+    # def post(self, *args, **kwargs):
+    #     posts = Boardlist.objects.all()
+    #     form = AddlistForm(self.request.POST)
+    #     if form.is_valid():
+    #         add
+    #     return render(self.request, self.template_name, {})
+
+    
 
 class BoardListView(TemplateView):
     """ View for retreiving the lists of Board lists
@@ -130,6 +155,12 @@ class BoardListView(TemplateView):
         lists = Boardlist.objects.filter(board__id=board_id)
         return render(self.request, self.template_name, {'blists': lists})
 
+    def post(self, *args, **kwargs):
+        board_id = kwargs.get('id')
+        board = get_object_or_404(Post, board_id=board_id)
+        board.delete()
+    
+
 class CardDetail(TemplateView):
     template_name = 'board/cardb.html'
 
@@ -138,3 +169,11 @@ class CardDetail(TemplateView):
         list_id = kwargs.get('list_id') #1
         cards = Card.objects.filter(board__id=list_id)
         return render(self.request, self.template_name, {'cards':cards})
+
+class DeleteList(TemplateView):
+    def post(self, *args, **kwargs):
+        list_id = kwargs.get('list_id')
+        print(list_id)
+        blist = get_object_or_404(Boardlist, board__id=list_id)
+        blist.delete()
+        return render(self.request, self.template_name, {})

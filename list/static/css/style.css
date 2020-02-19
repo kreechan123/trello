@@ -19,7 +19,7 @@
     padding: 0.35rem;
   }
   .card-list{
-    background-color: rgba(0,0,0,.03);
+    background-color: #ebecf0;
     min-width: 15rem;
     max-width: 15rem;
   }
@@ -63,7 +63,8 @@
   }
   .subcard{
     padding: 0.35rem;
-    background-color: #efefef;
+    background-color: #ebecf0;
+    margin: 0 20px;
   }
   .subcard form input{
     width: 100%;
@@ -80,7 +81,6 @@
   .list-container {
     width: 200px;
     min-height: 300px;
-    border: 1px solid #ccc;
     margin: 0 20px 0 0;
     padding: 8px 10px;
   }
