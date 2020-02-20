@@ -1,33 +1,38 @@
 
 {% for list in blists %}
-    <div class="card card-list list-container" data-list-id="{{ list.id }}"><span class="list-title">{{ list.title }}</span>
-        <a href="#" class="delbtn" data-id="{{list.id}}" data-url="{% url 'list_delete' list_id=list.id %}"><span class="ui-icon ui-icon-closethick"></span></a>
-        <div class="card-wrapper">
-<!-- Insert Card here -->
-        </div>
-        <div class="form-wrapper">
-            <button type="submit" id="blah" class="btn btn-outline-secondary add-card"> <span class="ui-icon ui-icon-plus"></span> Add another card</button>
-            <form action="{{list.id}}" class="form-card" method="POST">
-                <textarea placeholder="Enter a title for this card..."></textarea>
-                <button class="btn btn-success">Add Card</button><a href=""><span class="ui-icon ui-icon-closethick"></span></a>
-            </form>
-        </div>
+
+<div class="card card-list list-container connectedSortable" data-list-id="{{ list.id }}">
+    <!--  -->
+    <span class="list-title">{{ list.title }}</span>
+    <a href="#" class="delbtn" data-id="{{list.id}}" data-url="{% url 'list_delete' list_id=list.id %}">
+        <span class="ui-icon ui-icon-closethick"></span>
+    </a>
+    <div class="form-wrapper">
+        <button type="submit" id="blah" class="btn btn-outline-secondary add-card">
+            <span class="ui-icon ui-icon-plus"></span> Add another card
+        </button>
+        <form action="{% url 'addcard' list_id=list.id %}" class="" method="POST">
+            {% csrf_token %}
+            {{add_card_form.title}}
+            <button class="btn btn-success">Add Card</button>
+            <a href=""><span class="ui-icon ui-icon-closethick"></span></a>
+        </form>
     </div>
+</div>
+
 {% endfor %}
+
 <script>
-    autosize($('textarea'));
+    // autosize($('textarea'));
 
-    $( function() {
-        $( ".card-wrapper, .card-wrapper" ).sortable({
-        connectWith: ".card-wrapper"
-        }).disableSelection();
-    } );
+    $(".connectedSortable, .connectedSortable" ).sortable({
+    connectWith: ".connectedSortable"
+    }).disableSelection();
 
-
-    $('#blah').on('click',function(){
-        var elem = $(this);
-        elem.next().toggleClass('form-card-show');
-        $('textarea').focus();
-        elem.hide();
-    })
+    // $('#blah').on('click',function(){
+    //     var elem = $(this);
+    //     elem.next().toggleClass('form-card-show');
+    //     $('textarea').focus();
+    //     elem.hide();
+    // })
 </script>

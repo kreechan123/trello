@@ -90,18 +90,18 @@ class CardView(TemplateView):
         form = AddCardForm()
         return render(self.request, self.template_name, {'cards': cards, 'form':form})
 
-    def get_card(self, *args, **kwargs):
-        print("ini")
-        form = AddCardForm(self.request.POST, prefix='addcard')
-        if form.is_valid():
-            add = form.save(commit=False)
-            add.board = Boardlist.objects.get(title=q)
-            add.save()
-            print('valid')
-            return HttpResponseRedirect(self.request.path_info)
-        return render(self.request, self.template_name, {'form':form})
+    # def post(self, *args, **kwargs):
+    #     id = kwargs.get('list_id')
+    #     form = AddCardForm(self.request.POST)
+    #     if form.is_valid():
+    #         add = form.save(commit=False)
+    #         add.board = Card.objects.get(board__id=id)
+    #         add.save()
+    #         print('valid')
+    #         return HttpResponseRedirect(self.request.path_info)
+    #     return render(self.request, self.template_name, {'form':form})
 
-
+# New Code Below
 
 class DashBoardView(TemplateView):
     template_name = 'board/dashb.html'
@@ -132,14 +132,6 @@ class BoardDetailView(TemplateView):
             return JsonResponse(serialized_object, safe=False)
             
         return render(self.request, self.template_name, {'form':form,})
-
-    # def post(self, *args, **kwargs):
-    #     posts = Boardlist.objects.all()
-    #     form = AddlistForm(self.request.POST)
-    #     if form.is_valid():
-    #         add
-    #     return render(self.request, self.template_name, {})
-
     
 
 class BoardListView(TemplateView):
@@ -148,12 +140,20 @@ class BoardListView(TemplateView):
     template_name = 'board/list.html'
 
     def get(self, *args, **kwargs):
-        # board = get_object_or_404(Board, id=kwargs.get('id'))
+        board = get_object_or_404(Board, id=kwargs.get('id'))
         # if not  self.request.is_ajax():
         #     raise Http404
         board_id = kwargs.get('id')
         lists = Boardlist.objects.filter(board__id=board_id)
-        return render(self.request, self.template_name, {'blists': lists})
+        add_card_form = AddCardForm()
+        return render(
+            self.request, 
+            self.template_name, 
+            {
+                'blists': lists, 
+                'add_card_form': add_card_form
+            }
+        )
     
 
 class CardDetail(TemplateView):
@@ -174,3 +174,23 @@ class DeleteList(TemplateView):
         blist = get_object_or_404(Boardlist, id=list_id)
         blist.delete()
         return HttpResponse('/')
+
+class AddCard(TemplateView):
+    template_name = 'board/list.html'
+
+    # def get(self,*args,**kwargs):
+    #     form = AddCardForm()
+    #     return render(self.request, self.template_name, {'form':form})
+
+    def post(self, *args, **kwargs):
+        list_id = kwargs.get('list_id')
+        form = AddCardForm(self.request.POST)
+       
+        if form.is_valid():
+            import pdb; pdb.set_trace()
+            card = form.save(commit=False)
+            # card.board = Boardlist.objects.get(id=list_id)
+            # card.save()
+        else:
+            print("Not Valid")
+        return render(self.request, self.template_name, {'form':form})

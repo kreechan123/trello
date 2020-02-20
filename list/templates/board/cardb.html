@@ -2,6 +2,6 @@
 
 {%  block content %}
     {% for card in cards %}
-        <a id="card-p" class="class-card">{{ card.title }}</a>
+        <a id="card-p" class="class-card" data-id="{{card.board.id}}">{{ card.title }}</a>
     {% endfor %}
 {% endblock %}

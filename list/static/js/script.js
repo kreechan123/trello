@@ -14,14 +14,13 @@
   function viewCards() {
     $( ".list-container" ).each(function( index ) {
       var elem = $(this);
-      var eleminsert = $('.card-wrapper');
       var list_id = elem.data('list-id');
       var cards_url =  `/board/${id}/lists/${list_id}/cards`;
 
       $.ajax({  
         url: cards_url,
       }).done(function(response) {
-        eleminsert.append(response);
+        elem.append(response);
       });
 
     });

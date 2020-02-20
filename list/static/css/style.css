@@ -144,3 +144,6 @@
     position: absolute;
     bottom:0;
   } */
+  .form-wrapper textarea{
+    cursor: auto;
+  }
