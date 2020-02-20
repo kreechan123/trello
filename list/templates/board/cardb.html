@@ -1,8 +1,7 @@
 
-{%  block content %}
 
+{%  block content %}
     {% for card in cards %}
-        <a href id="card-p" data-card-id="{{ card.board.id }}">{{ card.title }}</a href>
+        <a id="card-p" class="class-card">{{ card.title }}</a>
     {% endfor %}
-    <!-- <button type="submit" class="btn btn-success">Add another card</button> -->
 {% endblock %}

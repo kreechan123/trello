@@ -1,5 +1,6 @@
-function deleteList(){
-    var x = $(this).data('id');
-    console.log(x);
-}
+// function deleteList(){
+//     var x = $(this).data('id');
+//     console.log(x);
+// }
+
 

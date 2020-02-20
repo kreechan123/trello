@@ -154,11 +154,6 @@ class BoardListView(TemplateView):
         board_id = kwargs.get('id')
         lists = Boardlist.objects.filter(board__id=board_id)
         return render(self.request, self.template_name, {'blists': lists})
-
-    def post(self, *args, **kwargs):
-        board_id = kwargs.get('id')
-        board = get_object_or_404(Post, board_id=board_id)
-        board.delete()
     
 
 class CardDetail(TemplateView):
@@ -171,9 +166,11 @@ class CardDetail(TemplateView):
         return render(self.request, self.template_name, {'cards':cards})
 
 class DeleteList(TemplateView):
-    def post(self, *args, **kwargs):
+    template_name = 'board/list.html'
+
+    def get(self, *args, **kwargs):
         list_id = kwargs.get('list_id')
         print(list_id)
-        blist = get_object_or_404(Boardlist, board__id=list_id)
+        blist = get_object_or_404(Boardlist, id=list_id)
         blist.delete()
-        return render(self.request, self.template_name, {})
+        return HttpResponse('/')

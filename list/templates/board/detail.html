@@ -9,9 +9,7 @@
 <div class="subcard">
 
     <div class="addlistbtn">
-        <!-- <button href="" id="addlist" class="add-list">Add another list</button> -->
         <div class="addhdn">
-            <!-- <input type="text" placeholder="Title"><br> -->
 
             <form action="{% url 'detail' board.id %}" method="POST" id="addlistform">
                 {% csrf_token %}

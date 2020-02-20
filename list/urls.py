@@ -26,4 +26,5 @@ urlpatterns = [
     path('board/<int:id>/lists/', BoardListView.as_view(), name='list'),
     path('board/<int:board_id>/lists/<int:list_id>/cards/', CardDetail.as_view(), name='card'),
     path('board/<int:list_id>/delete/', DeleteList.as_view(), name='list_delete'),
+    
 ]

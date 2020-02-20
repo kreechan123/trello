@@ -1,8 +1,6 @@
 (function(){
   'use strict';
 
-
-
   var id = $('#lists').data('board');
   var lists_url =  `/board/${id}/lists/`;
 
@@ -16,13 +14,14 @@
   function viewCards() {
     $( ".list-container" ).each(function( index ) {
       var elem = $(this);
+      var eleminsert = $('.card-wrapper');
       var list_id = elem.data('list-id');
       var cards_url =  `/board/${id}/lists/${list_id}/cards`;
 
       $.ajax({  
         url: cards_url,
-      }).done(function(response) {        
-        elem.append(response);
+      }).done(function(response) {
+        eleminsert.append(response);
       });
 
     });
@@ -37,36 +36,33 @@
         data:$(this).serialize(),
         success:function(data){
           var res = JSON.parse(data)[0]
+          console.log(url);
           $("#lists").append(`
-            <div class="card card-list">
-              <div class="card-header contenteditable-hd" style="height: initial;">
-                ${res.fields.title}
-              </div>
-              <div class="card-body card-list"> 
-              </div> 
+            <div class="card card-list list-container">
+            <span class="list-title">${res.fields.title}</span>
+                <a href="#" class="delbtn" data-id="${res.pk}" data-url="/board/${res.pk}/delete/"><span class="ui-icon ui-icon-closethick"></span></a>
             </div>`
             )
          },
      });
   });
 
-
-  $('.navbar').on('click', function(){
-    console.log('card clicked')
-  });
-
+  
 
   
-  $(document).on('click', '.www', function(e){
+  $(document).on('click', '.delbtn', function(e){
     e.preventDefault();
-    console.log('card clicked');
+    var url = $(this).data('url');
     var elem = $(this);
-    console.log(elem.data('list-id'));
+    console.log('blah')
+    $.ajax({
+      url:url,
+      method: 'get',
+    }).done(function(){
+      console.log("Success!");
+      $(elem).parents(".card-list").remove();
+    });
 
   });
-
-
-
-  
 
 })();
