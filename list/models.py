@@ -34,10 +34,10 @@ class BoardMember(models.Model):
 
 
 class Card(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=500)
     description = models.TextField(max_length=200, blank=True, null=True)
     image = models.FileField(upload_to='uploads/', blank=True, null=True)
-    board = models.ForeignKey(Boardlist, on_delete=models.CASCADE, null=True)
+    board = models.ForeignKey(Boardlist, on_delete=models.CASCADE, null=False)
     #group = models.ForeignKey(Board, on_delete=models.CASCADE, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

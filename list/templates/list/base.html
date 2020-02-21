@@ -7,18 +7,19 @@
         <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/jquery-ui.structure.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/jquery-ui.theme.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
     </head>
     <body>
       <nav class="navbar navbar-dark bg-dark">
         <a href="{% url 'dashboard' %}" class="navbar-brand">Trello</a>
-        <a href="{% url 'index' %}" class="navbar-brand">Trellos</a>
+        <!-- <a href="{% url 'index' %}" class="navbar-brand">Trellos</a> -->
         <form class="form-inline">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <div class="btn-group" role="group" aria-label="Basic example">
             <buttn class="btn btn-sm btn-primary" role="button">Search</buttn>
           {% if user.is_authenticated %}
-            <a class="btn btn-sm btn-secondary" href="{% url 'dashboard_view' %}" role="button">Boards</a>
+            <a class="btn btn-sm btn-secondary" href="{% url 'dashboard' %}" role="button">Boards</a>
             <a class="btn btn-sm btn-secondary" href="{% url 'logout' %}" role="button">Logout</a>
           {% endif %}
           {% if user.is_anonymous %}

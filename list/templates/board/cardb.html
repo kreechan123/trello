@@ -2,6 +2,13 @@
 
 {%  block content %}
     {% for card in cards %}
-        <a id="card-p" class="class-card" data-id="{{card.board.id}}">{{ card.title }}</a>
+        <a href="{% url 'card_detail' card.id %}" id="card-p" class="class-card" data-id="{{card.id}}" data-toggle="modal" data-target="#cardmodal">{{ card.title }}<i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
     {% endfor %}
+    
+    <!-- MODAL -->
+<div class="modal fade" id="cardmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        
+    </div>
+</div>
 {% endblock %}

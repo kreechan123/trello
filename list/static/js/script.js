@@ -12,7 +12,7 @@
   });
 
   function viewCards() {
-    $( ".list-container" ).each(function( index ) {
+    $( ".card-wrapper" ).each(function( index ) {
       var elem = $(this);
       var list_id = elem.data('list-id');
       var cards_url =  `/board/${id}/lists/${list_id}/cards`;
@@ -29,36 +29,111 @@
   $('#addlistform').on('submit',function(e){
     e.preventDefault();
     var url = $(this).attr('action');
+    var form = $(this);
     $.ajax({
         url:url,
         method:'post',
         data:$(this).serialize(),
         success:function(data){
-          var res = JSON.parse(data)[0]
-          console.log(url);
+          var res = JSON.parse(data)[0];
+          form.trigger('reset');
+          var csrftoken = getCookie('csrftoken');
+          var formwrap = $('.card-btn-wrapper').html();
           $("#lists").append(`
             <div class="card card-list list-container">
             <span class="list-title">${res.fields.title}</span>
-                <a href="#" class="delbtn" data-id="${res.pk}" data-url="/board/${res.pk}/delete/"><span class="ui-icon ui-icon-closethick"></span></a>
+                
+                  <div class="dropdown">
+                  <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                      <a class="dropdown-item" href="#">Something else here</a>
+                      <div class="dropdown-divider"></div>
+                      <a href="#" class="delbtn dropdown-item" data-id="${res.pk}" data-url="/board/${res.pk}/delete/">
+                          Archive This List
+                      </a>
+                  </div>
+                </div>
+                <form action="/board/${res.pk}/addcard/" class="card-form" method="POST">
+                <input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}">
+                <div class="card-btn-wrapper">
+                  ${formwrap}
+                </div>
+            </form>  
             </div>`
             )
          },
      });
   });
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
+  $(document).on('shown.bs.modal', '#cardmodal', function(e){
+    var elem = e.relatedTarget; // get click element
+    var id = $(elem).data('id'); // get card id from the click element
+    var url = $(elem).attr('href'); // defined card url: card/{card_id}/
+    console.log(elem);
+    $.ajax({ // ajax call get
+      url:url,
+    }).done(function(data){
+          console.log(data);
+          $('.modal-dialog').html(data);
+            // dump response to specific container
+      });
+  });
+
+  $(document).on('submit', '.card-form', function(e){
+    var form  =  $(this);
+    e.preventDefault();
+    // select element that where loaded via ajax    e.preventDefault();
+    var url = $(this).attr('action');
+    var cardwrap = $(this).parents('.list-container').find('.card-wrapper');
+    $.ajax({
+        url:url,
+        method:'post',
+        data:$(this).serialize(),
+     }).done(function(data){
+          var res = JSON.parse(data)[0]
+          form.trigger('reset');
+          cardwrap.append(
+            `<a id="card-p" class="class-card" data-id="${res.fields.board}">${res.fields.title}<i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>`
+          )
+     })
+  });
+var test = $(".connectedSortable" ).sortable('serialize');
+
+$(document).on('focusout', 'span.list-title', function(e){
+  e.preventDefault();
+  var val = $(this).html();
+  // console.log(val);
+})
   
 
-  
   $(document).on('click', '.delbtn', function(e){
+    // select element that where loaded via ajax
     e.preventDefault();
     var url = $(this).data('url');
     var elem = $(this);
-    console.log('blah')
     $.ajax({
       url:url,
       method: 'get',
     }).done(function(){
-      console.log("Success!");
       $(elem).parents(".card-list").remove();
     });
 
