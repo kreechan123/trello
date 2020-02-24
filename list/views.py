@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect,Http404
 from .models import Boardlist,Board, BoardMember, Card
 from django.utils import timezone
-from django.views.generic.base import TemplateView
+from django.views.generic import TemplateView
+from django.views import View
 from django.contrib.auth import authenticate,login,logout
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
@@ -91,7 +92,7 @@ class LoginView(LoggedInAuthMixin,TemplateView):
         if form.is_valid():
             if user is not None:
                 login(self.request, user)
-                return redirect('dashboard')
+                # return redirect('dashboard')
         context = {'form': form}
         return render(self.request, self.template_name, context)
 
@@ -201,3 +202,32 @@ class CardDetail(TemplateView):
         card = get_object_or_404(Card, id=card_id)
 
         return render(self.request,self.template_name,{'card':card})
+
+class DeleteCard(TemplateView):
+    template_name = 'board/list.html'
+
+    def get(self, *args, **kwargs):
+        card_id = kwargs.get('card_id')
+        card = get_object_or_404(Card, id = card_id)
+        card.delete()
+        return HttpResponse('success')
+
+class ListUpdateView(View):
+
+    def post(self, *args, **kwargs):
+        list_id = kwargs.get('list_id')
+        lists = Boardlist.objects.get(id=list_id)
+        title = self.request.POST.get('title')
+        lists.title = title
+        lists.save()
+        return JsonResponse({'title': title})
+
+class CardPositionView(View):
+
+    def post(self, *args, **kwargs):
+        list_id = kwargs.get('card_id')
+        card = Card.objects.get(id=list_id) #152
+        newlist = self.request.POST.get('board') #271
+        card.board_id = newlist
+        card.save()
+        return JsonResponse({})

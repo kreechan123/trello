@@ -1,3 +1,6 @@
+a{
+  text-decoration: none !important;
+}
 .back{
   padding: 25px;
   background-color: #e2e2e273;
@@ -20,9 +23,6 @@
     margin-right: 5px;
     position: relative;
   }
-  a{
-    text-decoration: none !important;
-  }
   .card{
     border: none;
   }
@@ -34,8 +34,7 @@
     min-width: 15rem;
     max-width: 15rem;
   }
-  .card-list .class-card, .card-list textarea{
-    color: inherit;
+  .card-wrapper .card-each-wrap, .card-list textarea{
     display: inline-block;
     width: 100%;
     padding: 4.9px 6px;
@@ -44,8 +43,29 @@
     margin: 0 0 9px;
     box-shadow: 0px 0.8px 1px #15151559;
     font-size: 14px;
-    cursor: pointer;
+    
     position: relative;
+  }
+  .card-each-wrap a{
+    width: 85%;
+    cursor: pointer;
+    color: inherit;
+    display: inline-block;
+  }
+  .card-each-wrap .card-delete{
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: auto;
+    padding: 6px;
+  }
+  .card-each-wrap .card-delete:hover{
+    background-color: #e2e2e2;
+    border-radius: 2px;
+  }
+  .card-each-wrap i{
+    color: #777777;
+
   }
   .contenteditable-hd, .contenteditable-ft{
     border-bottom: none;
@@ -181,6 +201,11 @@
   .modal-title-wrapper, .modal-des-wrapper{
     padding-left: 35px;
   }
+  .modal-des-wrapper textarea{
+    background-color: #eaecef;
+    border: none;
+    box-shadow: none;
+  }
   .modal-title{
     font-size: 20px;
     font-weight: 600;
@@ -199,9 +224,36 @@
     font-weight: 400;
     line-height: 20px;
   }
-  .class-card i{
+/*  .class-card i{
     position: absolute;
     right: 5px;
     top: 8px;
     color: #6b778c;
-  }
+  }*/
+.card-image{
+  width: 100%;
+}
+.modal-attachment{
+  padding: 1rem 1rem;
+}
+.modal-attachment img{
+  width: 150px;
+}
+.card-info{
+  position: relative;
+  display: inline-block !important;
+}
+.card-info span{
+  display: inline-block;
+  width: 100%;
+}
+.sidebar button{
+position: relative;
+text-align: initial;
+padding-left: 30px;
+}
+.sidebar button i{
+  top: 7px;
+  left: 7px;
+  font-size: 14px;
+}

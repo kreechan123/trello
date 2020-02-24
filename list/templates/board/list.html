@@ -1,10 +1,12 @@
 
 {% for list in blists %}
 
-<div class="card card-list list-container" id="card-append" data-list-id="{{ list.id }}">
-    <span class="list-title" contenteditable="true">{{ list.title }}</span>
+<div class="card card-list list-container" data-list-id="{{ list.id }}">
+
+    <span class="list-title" contenteditable="true" data-url="{% url 'list_update' list.id%}" csrf="{{ csrf_token }}" data-title="{{list.title}}">{{ list.title }}</span>
+
     <div class="card-wrapper connectedSortable" data-list-id="{{ list.id }}">
-        
+        <!-- dump cards -->
     </div>
     <div class="dropdown">
         <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,7 +43,28 @@
     autosize($('textarea'));
 
     var test = $(".connectedSortable" ).sortable({
-    connectWith: ".connectedSortable"
+        connectWith: ".connectedSortable",
+        receive:function(event, ui){
+
+            var elem = event.target;
+            var id = ui.item.find('.class-card').data('id');
+            var new_id = $(elem).data('list-id');
+            var url = `/card/${id}/pos/`;
+            var csrf = $(elem).siblings('.list-title').attr('csrf');
+            console.log(url);
+            
+            // var targetList = $(this);
+            // var targetElem = $(targetList[0]);
+            // console.log(targetElem.data('list-id'));
+            
+            $.ajax({
+                url:url,
+                method: 'post',
+                data: {'board': new_id, 'csrfmiddlewaretoken': csrf}
+            }).done(function(){
+                
+            })
+        }
     })
 
 

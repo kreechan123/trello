@@ -1,14 +1,18 @@
-
-
 {%  block content %}
     {% for card in cards %}
-        <a href="{% url 'card_detail' card.id %}" id="card-p" class="class-card" data-id="{{card.id}}" data-toggle="modal" data-target="#cardmodal">{{ card.title }}<i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+    <div class="card-each-wrap">
+    	{% if card.image %}
+    		<img class="card-image" src="/static/{{ card.image }}">
+    	{% endif %}
+        <a href="{% url 'card_detail' card.id %}" class="class-card" data-id="{{card.id}}" data-toggle="modal" data-target="#cardmodal">{{ card.title }}</a>
+        <a href="{% url 'card_delete' card.id %}" class="card-delete" data-id={{card.id}}><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+    </div>
     {% endfor %}
     
     <!-- MODAL -->
 <div class="modal fade" id="cardmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        
+        <!-- Modal loaded -->
     </div>
 </div>
 {% endblock %}
