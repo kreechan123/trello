@@ -42,31 +42,29 @@
 
     autosize($('textarea'));
 
-    var test = $(".connectedSortable" ).sortable({
+    $(".connectedSortable" ).sortable({
         connectWith: ".connectedSortable",
         receive:function(event, ui){
-
             var elem = event.target;
             var id = ui.item.find('.class-card').data('id');
             var new_id = $(elem).data('list-id');
             var url = `/card/${id}/pos/`;
             var csrf = $(elem).siblings('.list-title').attr('csrf');
-            console.log(url);
+            // console.log();
             
-            // var targetList = $(this);
-            // var targetElem = $(targetList[0]);
-            // console.log(targetElem.data('list-id'));
-            
-            $.ajax({
+            ajaxCall(url,new_id,csrf);
+        }
+    })
+
+     function ajaxCall(url,new_id,csrf){
+        $.ajax({
                 url:url,
                 method: 'post',
                 data: {'board': new_id, 'csrfmiddlewaretoken': csrf}
             }).done(function(){
-                
-            })
-        }
-    })
 
+        })
+     }
 
     // $('#blah').on('click',function(){
     //     var elem = $(this);

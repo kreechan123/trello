@@ -38,6 +38,7 @@ class Card(models.Model):
     description = models.TextField(max_length=200, blank=True, null=True)
     image = models.FileField(upload_to='uploads/', blank=True, null=True)
     board = models.ForeignKey(Boardlist, on_delete=models.CASCADE, null=False)
+    position = models.PositiveIntegerField(default=0)
     #group = models.ForeignKey(Board, on_delete=models.CASCADE, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

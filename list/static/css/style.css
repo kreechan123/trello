@@ -192,6 +192,7 @@ a{
   .modal-myheader{
     padding: 1rem 1rem;
     position: relative;
+    width: 100%;
   }
   .modal-content i{
     position: absolute;
@@ -223,6 +224,9 @@ a{
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
   }
 /*  .class-card i{
     position: absolute;
@@ -247,6 +251,10 @@ a{
   display: inline-block;
   width: 100%;
 }
+.sidebar{
+  padding-bottom: 25px;
+  padding-top: 25px;
+}
 .sidebar button{
 position: relative;
 text-align: initial;
@@ -257,3 +265,38 @@ padding-left: 30px;
   left: 7px;
   font-size: 14px;
 }
+.modal-content{
+  background-color: #f4f5f7;
+}
+.container.sidebar .btn-secondary{
+  color: #394d67;
+  background-color: #eaecf0;
+  border-color: #eaecf0;
+}
+.hide-inp{
+  display: none !important;
+}
+.btn-attach{
+  position: relative;
+  margin-top: 8px;
+  display: inline-block;
+}
+.btn-attach i{
+top: 5px;
+left: 8px;
+font-size: 14px;
+}
+.attach{
+  position:absolute;
+  top: 0;
+}
+.attach .master-input{
+  opacity: 0;
+  z-index: 2;
+  width: 100%;
+}
+.fake-wrapper{
+  position: relative;
+  margin: 8px 0 0;
+}
+

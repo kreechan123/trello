@@ -116,7 +116,7 @@
           form.trigger('reset');
           cardwrap.append(
             `<div class="card-each-wrap">
-              	<a href="/card/${res.pk}/detail/" class="class-card" data-id="${res.pk}" data-toggle="modal" data-target="#cardmodal">${res.fields.title}</a>
+              	<a href="/card/${res.pk}/detail/" class="class-card" data-id="${res.pk}" data-toggle="modal" data-target="#cardmodal" title="${ res.fields.position }">${res.fields.title}</a>
               	<a href="/card/${res.pk}/delete/" class="card-delete" data-id=${res.pk}><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
             </div>`
           )
@@ -156,6 +156,36 @@ $(document).on('focusout', 'span.list-title', function(e){
     elem.data('title', response.title);
   });
 })
+
+
+$(document).on('focusout','.card-des-textarea',function(){
+  var $elem = $(this);
+  var url = $elem.data('url');
+  var description = $(this).val();
+  var csrftoken = getCookie('csrftoken');
+  if(description){
+    $.ajax({
+      url:url,
+      method: 'post',
+      data: {'description': description, 'csrfmiddlewaretoken': csrftoken }
+  
+    }).done(function(res){
+        $('.modal-des').removeClass('hide-inp');
+        $('.des-wrapper').addClass('hide-inp');
+    });
+  }else{
+    $('.des-blank').removeClass('hide-inp');
+    $('.des-wrapper').addClass('hide-inp');
+    $(this).addClass('hide-inp');
+  }
+});
+$(document).on('click', '.modal-des, .somes', function(){
+  var $elem = $(this);
+  if( !$elem.hasClass('hide-inp')){
+    $elem.addClass('hide-inp');
+    $('.des-wrapper').removeClass('hide-inp');
+  }
+})
   
   $(document).on('click', '.delbtn', function(e){
     // select element that where loaded via ajax
@@ -170,5 +200,11 @@ $(document).on('focusout', 'span.list-title', function(e){
     });
 
   });
+
+function callAjax(){
+    var form = $('.attach');
+    form.submit;
+    debugger;
+}
 
 })();

@@ -162,7 +162,7 @@ class CardListView(TemplateView):
     def get(self, *args, **kwargs):
         board_id = kwargs.get('board_id') #3
         list_id = kwargs.get('list_id') #1
-        cards = Card.objects.filter(board__id=list_id)
+        cards = Card.objects.filter(board__id=list_id).order_by('position')
         return render(self.request, self.template_name, {'cards':cards})
 
 class DeleteList(TemplateView):
@@ -176,10 +176,6 @@ class DeleteList(TemplateView):
 
 class AddCard(TemplateView):
     template_name = 'board/list.html'
-
-    # def get(self,*args,**kwargs):
-    #     form = AddCardForm()
-    #     return render(self.request, self.template_name, {'form':form})
 
     def post(self, *args, **kwargs):
         list_id = kwargs.get('list_id')
@@ -231,3 +227,19 @@ class CardPositionView(View):
         card.board_id = newlist
         card.save()
         return JsonResponse({})
+
+class CardDescriptionView(View):
+
+    def post(self, *args, **kwargs):
+        card_id = kwargs.get('card_id')
+        obj = Card.objects.get(id=card_id)
+        desc = self.request.POST.get('description')
+        obj.description = desc
+        obj.save()
+        return HttpResponse(desc)
+
+class CardUploadView(View):
+    def post(self, *args, **kwargs):
+
+
+        return HttpResponseRedirect(self.request.path_info)

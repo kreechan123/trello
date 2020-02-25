@@ -14,6 +14,8 @@ from list.views import (
     DeleteCard,
     ListUpdateView,
     CardPositionView,
+    CardDescriptionView,
+    CardUploadView,
 )
 urlpatterns = [
     path('', LoginView.as_view(), name="index"),
@@ -31,5 +33,7 @@ urlpatterns = [
     path('card/<int:card_id>/delete/', DeleteCard.as_view(), name='card_delete'),
     path('card/<int:list_id>/edit/', ListUpdateView.as_view(), name='list_update'),
     path('card/<int:card_id>/pos/', CardPositionView.as_view(), name='card_position'),
+    path('card/<int:card_id>/des/', CardDescriptionView.as_view(), name='card_des'),
+    path('card/<int:card_id>/upload/', CardUploadView.as_view(), name='card_upload'),
 
 ]
