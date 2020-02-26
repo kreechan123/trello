@@ -36,12 +36,13 @@ class BoardMember(models.Model):
 
 
 def uploadto(instance, filename):
-    return '/'.join([filename])
+    return '/'.join(['uploads', instance.board.board.title, filename])
 
 class Card(models.Model):
     title = models.CharField(max_length=500)
     description = models.TextField(max_length=200, blank=True, null=True)
     image = models.FileField(upload_to=uploadto, blank=True, null=True)
+    card_image_name = models.CharField(max_length=128, blank=True, null=True)
     board = models.ForeignKey(Boardlist, on_delete=models.CASCADE, null=False)
     position = models.PositiveIntegerField(default=0)
     #group = models.ForeignKey(Board, on_delete=models.CASCADE, null=True)

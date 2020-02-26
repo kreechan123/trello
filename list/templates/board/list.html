@@ -28,7 +28,7 @@
                 {% csrf_token %}
                 <div class="card-btn-wrapper">
                     {{add_card_form.title}}
-                    <button type="submit" class="btn btn-success">Add Card</button>
+                    <button type="submit" class="btn btn-success ts">Add Card</button>
                     <!-- <a href=""><span class="ui-icon ui-icon-closethick"></span></a> -->
                 </div>
             </form>
@@ -40,7 +40,7 @@
 
 <script>
 
-    autosize($('textarea'));
+    // autosize($('textarea'));
 
     $(".connectedSortable" ).sortable({
         connectWith: ".connectedSortable",
@@ -65,11 +65,10 @@
 
         })
      }
-
-    // $('#blah').on('click',function(){
-    //     var elem = $(this);
-    //     elem.next().toggleClass('form-card-show');
-    //     $('textarea').focus();
-    //     elem.hide();
-    // })
+     $(this).keypress(function (e) {
+        if (e.which == 13) {
+        $('form.card-form').submit();
+        return false;    //<---- Add this line
+        }
+    });
 </script>

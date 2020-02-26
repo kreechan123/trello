@@ -176,16 +176,12 @@ class CardDescriptionView(View):
         return HttpResponse(desc)
 
 class CardUploadView(View):
+    
     def post(self, *args, **kwargs):
         card_id = kwargs.get('card_id')
         upload = self.request.FILES.get('file')
         card = Card.objects.get(id=card_id)
         card.image = upload 
-        card.image.name = upload.name
+        card.card_image_name = upload.name
         card.save() 
-        # print(upload.name)
-        # json = 
-        return HttpResponse(upload)
-        # # import pdb; pdb.set_trace()
-        # serialized_object = serializers.serialize('json', [card,])
-        # return JsonResponse(serialized_object, safe=False)
+        return JsonResponse({'image_url': card.image.url, 'image_name': card.card_image_name, 'date_created': card.date_created}, safe=False)

@@ -28,23 +28,24 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        {% if card.image %}
+                        
                         <div class="container-fluid open-image">
                             <div class="row">
-                                <div class="col-md-4">
-                                    <img class="image-output" src="{{ card.image.url }}" style="width: 100%;">
+                                <div class="col-md-4 card-image">
+                                    {% if card.image %}
+                                    <img src="{{ card.image.url}}" style="width: 100%;" alt="">
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-8 card-info">
-                                    <span><strong>{{ card.image.name }}</strong></span>
+                                    {% if card.image %}
+                                    <span><strong>{{ card.card_image_name }}</strong></span>
                                     <span>{{ card.date_created }}</span>
-                                    <span><i class="fa fa-card"></i><a href="">Remove Cover</a></span>
-                                </div>
-                                <div class="col-md-12">
-                                    <button class="btn btn-secondary">Add an attachment</button>
+                                    <span><i class="fa fa-card"></i><a href="" class="btn btn-outline-info btn-sm">Remove Cover</a></span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
-                        {% endif %}
+                        
                     </div>
                     <div class="col-md-12">
                         <div class="modal-myheader">
@@ -94,8 +95,16 @@ function submitFunc(){
         enctype: 'multipart/form-data',
         data: new FormData($form[0]),
     }).done(function(res){
-        console.log('Sucess ajax');
-        // console.log("From sever:", res);
+        console.log("From sever:", res);
+        // var card = res.pop();
+
+        var image = `<img src="${res.image_url}" style="width:100%;"></img>`;
+        var info =  `<span><strong>${ res.image_name }</strong></span>
+                    <span>${ res.date_created }</span>
+                    <span><i class="fa fa-card"></i><a href="" class="btn btn-outline-info btn-sm">Remove Cover</a></span>`
+        $('.card-image').append(image);
+        $('.card-info').append(info);
+
     })
 }
 
