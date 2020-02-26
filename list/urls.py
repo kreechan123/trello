@@ -1,6 +1,10 @@
+from django.conf import settings
+from django.conf.urls.static import static
+
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+
 from list.views import (
     LoginView,
     LogoutView,
@@ -17,6 +21,8 @@ from list.views import (
     CardDescriptionView,
     CardUploadView,
 )
+
+
 urlpatterns = [
     path('', LoginView.as_view(), name="index"),
     path('logout/',LogoutView.as_view(), name="logout"),
@@ -36,4 +42,4 @@ urlpatterns = [
     path('card/<int:card_id>/des/', CardDescriptionView.as_view(), name='card_des'),
     path('card/<int:card_id>/upload/', CardUploadView.as_view(), name='card_upload'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

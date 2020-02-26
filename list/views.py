@@ -11,69 +11,6 @@ from .mixins import LoggedInAuthMixin
 from django.core import serializers
 
 
-    
-# class DashboardView(TemplateView):
-#     template_name = "list/dashboard.html"
-#     form = CreateBoardForm
-
-#     def get(self, *args, **kwargs):
-#         boards = Board.objects.all()
-#         form = CreateBoardForm()
-#         return render(self.request, self.template_name, {'boards': boards,'form':form})
-
-#     def post(self, *args, **kwargs):
-#         if self.request.method == 'POST':
-#             form = CreateBoardForm(self.request.POST)
-#             if form.is_valid():
-#                 add = form.save(commit=False)
-#                 add.owner = self.request.user
-#                 add.save()
-#                 return HttpResponseRedirect("/")
-#         else:
-#             form = CreateBoardForm()
-
-#         return render(self.request, self.template_name, {'form':form})
-
-# class BoardlistView(TemplateView):
-#     template_name = "list/list.html"
-
-#     def get(self, *args, **kwargs):
-#         title = kwargs.get('title')
-#         blists = Boardlist.objects.filter(board__title=title)
-#         clists = Card.objects.all()
-#         form = AddListForm()
-#         return render(self.request, self.template_name, {'blists': blists, 'clists': clists, 'form': form})
-
-#     def post(self, *args, **kwargs):
-#         title = kwargs.get('title')
-#         form = AddListForm(self.request.POST)
-#         if form.is_valid():
-#             add = form.save(commit=False)
-#             add.board = Board.objects.get(title=title)
-#             add.save()
-#             return HttpResponseRedirect(self.request.path_info)
-#         return render(self.request, self.template_name, {'form':form})
-
-
-# class CardView(TemplateView):
-#     template_name = "list/list.html"
-
-#     def get(self, *args, **kwargs):
-#         cards = Card.objects.all()
-#         form = AddCardForm()
-#         return render(self.request, self.template_name, {'cards': cards, 'form':form})
-
-    # def post(self, *args, **kwargs):
-    #     id = kwargs.get('list_id')
-    #     form = AddCardForm(self.request.POST)
-    #     if form.is_valid():
-    #         add = form.save(commit=False)
-    #         add.board = Card.objects.get(board__id=id)
-    #         add.save()
-    #         print('valid')
-    #         return HttpResponseRedirect(self.request.path_info)
-    #     return render(self.request, self.template_name, {'form':form})
-
 # New Code Below
 class LoginView(LoggedInAuthMixin,TemplateView):
     template_name = 'list/login.html'
@@ -240,6 +177,15 @@ class CardDescriptionView(View):
 
 class CardUploadView(View):
     def post(self, *args, **kwargs):
-
-
-        return HttpResponseRedirect(self.request.path_info)
+        card_id = kwargs.get('card_id')
+        upload = self.request.FILES.get('file')
+        card = Card.objects.get(id=card_id)
+        card.image = upload 
+        card.image.name = upload.name
+        card.save() 
+        # print(upload.name)
+        # json = 
+        return HttpResponse(upload)
+        # # import pdb; pdb.set_trace()
+        # serialized_object = serializers.serialize('json', [card,])
+        # return JsonResponse(serialized_object, safe=False)

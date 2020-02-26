@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -33,10 +34,14 @@ class BoardMember(models.Model):
     archived = models.BooleanField(default=False)
 
 
+
+def uploadto(instance, filename):
+    return '/'.join([filename])
+
 class Card(models.Model):
     title = models.CharField(max_length=500)
     description = models.TextField(max_length=200, blank=True, null=True)
-    image = models.FileField(upload_to='uploads/', blank=True, null=True)
+    image = models.FileField(upload_to=uploadto, blank=True, null=True)
     board = models.ForeignKey(Boardlist, on_delete=models.CASCADE, null=False)
     position = models.PositiveIntegerField(default=0)
     #group = models.ForeignKey(Board, on_delete=models.CASCADE, null=True)
@@ -45,3 +50,7 @@ class Card(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def get_image_name(self):
+        return self.image.name
