@@ -4,13 +4,17 @@
 
 <div class="col-md-12 member-board">
     <span><strong>{{board.title}}</strong></span>
-    <!-- <a href="" class="btn btn-outline-secondary btn-sm">Personal</a>
-    <a href="" class="btn btn-outline-secondary btn-sm">Private</a> -->
     <span>Members:</span>
-    {% for user in users %}
-        {{user.members.first_name}}
+    {% for member in members %}
+        <span>{{member.members}}, </span>
+        <h2> {{member.members.user.profile.bio}} </h2>
     {% endfor %}
-
+    <div>
+        <form action="{% url 'add_member' board.id %}" method="post" class="add-member form-inline">{% csrf_token %}
+            <input type="text" name="name" class="form-control mb-2 mr-sm-2 test" placeholder="Add members..">
+            <button type="submit" class="btn btn-primary mb-2">Add</button>
+        </form>
+    </div>
 </div>
 
 <div class="col-md-12">
@@ -21,14 +25,12 @@
     
         <div class="addlistbtn">
             <div class="addhdn">
-    
                 <form action="{% url 'detail' board.id %}" method="POST" id="addlistform">
                     {% csrf_token %}
                     {{ form.title }}
                     <br>
                     <button type="submit" class="btn btn-success btn-card">Add List</button>
                 </form>
-    
             </div>
         </div>
     </div>

@@ -20,6 +20,7 @@ from list.views import (
     CardPositionView,
     CardDescriptionView,
     CardUploadView,
+    AddMemberView,
 )
 
 
@@ -41,5 +42,6 @@ urlpatterns = [
     path('card/<int:card_id>/pos/', CardPositionView.as_view(), name='card_position'),
     path('card/<int:card_id>/des/', CardDescriptionView.as_view(), name='card_des'),
     path('card/<int:card_id>/upload/', CardUploadView.as_view(), name='card_upload'),
+    path('board/<int:id>/addmember', AddMemberView.as_view(), name='add_member'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

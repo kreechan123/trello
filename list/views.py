@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect,Http404
-from .models import Boardlist,Board, BoardMember, Card,User, BoardMember
+from .models import Boardlist,Board, BoardMember, Card,User, BoardMember, Profile
 from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views import View
 from django.contrib.auth import authenticate,login,logout
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
-from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm
+from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm, AddMemberForm
 from .mixins import LoggedInAuthMixin
 from django.core import serializers
 
@@ -56,8 +56,17 @@ class BoardDetailView(TemplateView):
         board = get_object_or_404(Board, id=kwargs.get('id'))
         id=kwargs.get('id')
         form = AddListForm()
-        users = BoardMember.objects.filter(board__id=id)
-        return render(self.request, self.template_name, {'board': board, 'form':form, 'users': users})
+        addmemform = AddMemberForm()
+        members = BoardMember.objects.filter(board__id=id)
+        users = User.objects.all()
+        return render(self.request, self.template_name, {
+            'board': board,
+            'form':form,
+            'members': members,
+            'users' : users,
+            'addmemform' : addmemform
+            }
+            )
 
     def post(self, *args, **kwargs):
         id = kwargs.get('id')
@@ -121,7 +130,6 @@ class AddCard(TemplateView):
         form = AddCardForm(self.request.POST)
        
         if form.is_valid():
-            # import pdb; pdb.set_trace()
             card = form.save(commit=False)
             card.board = Boardlist.objects.get(id=list_id)
             card.save()
@@ -161,8 +169,8 @@ class CardPositionView(View):
 
     def post(self, *args, **kwargs):
         list_id = kwargs.get('card_id')
-        card = Card.objects.get(id=list_id) #152
-        newlist = self.request.POST.get('board') #271
+        card = Card.objects.get(id=list_id)
+        newlist = self.request.POST.get('board')
         card.board_id = newlist
         card.save()
         return JsonResponse({})
@@ -187,3 +195,11 @@ class CardUploadView(View):
         card.card_image_name = upload.name
         card.save() 
         return JsonResponse({'image_url': card.image.url, 'image_name': card.card_image_name, 'date_created': card.date_created}, safe=False)
+
+class AddMemberView(View):
+
+    def post(self, *args, **kwargs):
+        board_id = kwargs.get('id')
+        form = self.request.POST.get('name')
+        import pdb; pdb.set_trace()
+        return HttpResponse("form")

@@ -23,3 +23,5 @@ class AddCardForm(forms.ModelForm):
             widgets = {
             'title': Textarea(attrs={'cols': 24, 'rows': 0, 'placeholder':'Enter a title for this card...'}),
         }
+class AddMemberForm(forms.Form):
+    member = forms.CharField(max_length=200)

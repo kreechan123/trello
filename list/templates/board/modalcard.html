@@ -96,7 +96,7 @@ function submitFunc(){
         data: new FormData($form[0]),
     }).done(function(res){
         console.log("From sever:", res);
-        // var card = res.pop();
+        // console.log(res)
 
         var image = `<img src="${res.image_url}" style="width:100%;"></img>`;
         var info =  `<span><strong>${ res.image_name }</strong></span>
