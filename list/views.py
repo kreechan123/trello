@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect,Http404
-from .models import Boardlist,Board, BoardMember, Card
+from .models import Boardlist,Board, BoardMember, Card,User, BoardMember
 from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views import View
@@ -54,8 +54,10 @@ class BoardDetailView(TemplateView):
 
     def get(self, *args, **kwargs):
         board = get_object_or_404(Board, id=kwargs.get('id'))
+        id=kwargs.get('id')
         form = AddListForm()
-        return render(self.request, self.template_name, {'board': board, 'form':form})
+        users = BoardMember.objects.filter(board__id=id)
+        return render(self.request, self.template_name, {'board': board, 'form':form, 'users': users})
 
     def post(self, *args, **kwargs):
         id = kwargs.get('id')

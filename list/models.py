@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 
 
 class Board(models.Model):
+    """Board Model
+    """
     title = models.CharField(max_length=200)
     archive = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -18,6 +20,8 @@ class Board(models.Model):
         return self.title
 
 class Boardlist(models.Model):
+    """Boardlist Model
+    """
     title = models.CharField(max_length=200)    
     archived = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -27,18 +31,14 @@ class Boardlist(models.Model):
     def __str__(self):
         return self.title
 
-class BoardMember(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    board = models.ForeignKey(Board,on_delete=models.CASCADE)
-    is_confirmed = models.BooleanField(default=False)
-    archived = models.BooleanField(default=False)
-
-
 
 def uploadto(instance, filename):
     return '/'.join(['uploads', instance.board.board.title, filename])
 
+
 class Card(models.Model):
+    """ Card Model
+    """
     title = models.CharField(max_length=500)
     description = models.TextField(max_length=200, blank=True, null=True)
     image = models.FileField(upload_to=uploadto, blank=True, null=True)
@@ -55,3 +55,13 @@ class Card(models.Model):
     @property
     def get_image_name(self):
         return self.image.name
+
+
+class BoardMember(models.Model):
+    """BoardMember Model
+    """
+    board = models.ForeignKey(Board,on_delete=models.CASCADE)
+    is_confirmed = models.BooleanField(default=False)
+    archived = models.BooleanField(default=False)
+    members = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank="True")
+

@@ -2,24 +2,37 @@
 
 {%  block content %}
 
+<div class="col-md-12 member-board">
+    <span><strong>{{board.title}}</strong></span>
+    <!-- <a href="" class="btn btn-outline-secondary btn-sm">Personal</a>
+    <a href="" class="btn btn-outline-secondary btn-sm">Private</a> -->
+    <span>Members:</span>
+    {% for user in users %}
+        {{user.members.first_name}}
+    {% endfor %}
 
-<div id="lists" class="lists card-deck card-deck-list" data-board="{{ board.id }}">
-    <!-- data goes here -->
 </div>
-<div class="subcard">
 
-    <div class="addlistbtn">
-        <div class="addhdn">
-
-            <form action="{% url 'detail' board.id %}" method="POST" id="addlistform">
-                {% csrf_token %}
-                {{ form.title }}
-                <br>
-                <button type="submit" class="btn btn-success btn-card">Add List</button>
-            </form>
-
+<div class="col-md-12">
+    <div id="lists" class="lists card-deck card-deck-list" data-board="{{ board.id }}">
+        <!-- data goes here -->
+    </div>
+    <div class="subcard">
+    
+        <div class="addlistbtn">
+            <div class="addhdn">
+    
+                <form action="{% url 'detail' board.id %}" method="POST" id="addlistform">
+                    {% csrf_token %}
+                    {{ form.title }}
+                    <br>
+                    <button type="submit" class="btn btn-success btn-card">Add List</button>
+                </form>
+    
+            </div>
         </div>
     </div>
 </div>
+
 
 {% endblock %}
