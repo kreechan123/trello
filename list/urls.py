@@ -44,6 +44,6 @@ urlpatterns = [
     path('card/<int:card_id>/des/', CardDescriptionView.as_view(), name='card_des'),
     path('card/<int:card_id>/upload/', CardUploadView.as_view(), name='card_upload'),
     path('board/<int:id>/addmember/', AddMemberView.as_view(), name='add_member'),
-    path('confirm/<uuid:token>/', UserConfirmationView.as_view(), name='confirm'),
+    path('confirm/<uuid:token>/<int:board_id>/', UserConfirmationView.as_view(), name='confirm'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

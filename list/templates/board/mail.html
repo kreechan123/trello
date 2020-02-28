@@ -5,7 +5,7 @@
     <title>title</title>
 </head>
 <body>
-    <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'confirm' token %}">Click </a>
+    <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'confirm' token=token board_id=board_id %}">Click </a>
 
 <style>
     a{

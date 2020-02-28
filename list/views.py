@@ -205,8 +205,6 @@ class AddMemberView(View):
         queryset = User.objects.filter(email = email)
         if queryset.exists():
             board = Board.objects.get(id=board_id)
-            # check = Invite.objects.filter(email = email)
-            # if not check.exists():
             invite = Invite.objects.create(
                 email=email,
                 board=board,
@@ -215,17 +213,14 @@ class AddMemberView(View):
             recipient = Invite.objects.filter(email = email)
             recipient = recipient.latest('date_invited')
             # send message
-            # import pdb; pdb.set_trace()
             recipient_email = recipient.email
 
             from_email = settings.EMAIL_HOST_USER
-            # import pdb; pdb.set_trace()
             subject, from_email, to = 'Board Invitation', from_email , recipient_email
             text_content = 'This is an important message.'
-            # import pdb; pdb.set_trace()
             html_content = render_to_string(
                 'board/mail.html',
-                {'token': recipient.token, 'request': self.request}
+                {'token': recipient.token, 'request': self.request, 'board_id': board_id}
                 )
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
@@ -237,6 +232,6 @@ class UserConfirmationView(TemplateView):
     template_name = 'board/userconfirm.html'
 
     def post(self, *args, **kwargs):
-        token = kwargs.get('token')
-        print(token)
+        import pdb; pdb.set_trace()
+        print("asd")
         return render(self.request, self.template_name, {})
