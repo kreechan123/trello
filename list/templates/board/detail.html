@@ -11,7 +11,7 @@
     {% endfor %}
     <div>
         <form action="{% url 'add_member' board.id %}" method="post" class="add-member form-inline">{% csrf_token %}
-            <input type="text" name="name" class="form-control mb-2 mr-sm-2 test" placeholder="Add members..">
+            <input type="email" name="email" class="form-control mb-2 mr-sm-2 test" placeholder="Add members..">
             <button type="submit" class="btn btn-primary mb-2">Add</button>
         </form>
     </div>

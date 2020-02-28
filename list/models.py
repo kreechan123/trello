@@ -1,4 +1,4 @@
-import os
+import os, uuid
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -79,7 +79,19 @@ class BoardMember(models.Model):
     """BoardMember Model
     """
     board = models.ForeignKey(Board,on_delete=models.CASCADE)
-    is_confirmed = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
-    members = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank="True")
+    member = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank="True")
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+class Invite(models.Model):
+    """Invite Model
+    """
+    token = models.UUIDField(default=uuid.uuid4, editable=False) 
+    email = models.EmailField(max_length=254)
+    board = models.ForeignKey(Board,on_delete=models.CASCADE)
+    invited_by = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank="True")
+    date_invited = models.DateTimeField(auto_now_add=True)
+    is_confirmed = models.BooleanField(default=False)
+
 
