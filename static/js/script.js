@@ -249,12 +249,23 @@ $(document).on('focusout','.card-des-textarea',function(){
         `<div class="single-user">
           <i class="fa fa-user-circle-o" aria-hidden="true"></i>
           <div class="modal-des-wrapper">
-              <p class="name-post"><strong>${res.user}</strong> <span class="time-elapse">2 minutes ago</span></p>
+              <p class="name-post"><strong>${res.user}</strong> <span class="time-elapse">${res.time}</span></p>
               <p class="comment-post">${res.comment}</p>
               <span class="comment-del"><a href="">Delete</a></span>
           </div>
         </div>`
       )
+    })
+  }) 
+    $(document).on('click','.comment-del a', function(e) {
+    e.preventDefault();
+    var csrftoken = getCookie('csrftoken');
+    $.ajax({
+      url: $(this).attr('href'),
+      method: 'POST',
+      data: {'csrfmiddlewaretoken': csrftoken }
+    }).done(function(res){
+      console.log(res);
     })
   })
 })();

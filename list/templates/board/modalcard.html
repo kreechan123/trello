@@ -67,9 +67,9 @@
                                 <div class="single-user">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                     <div class="modal-des-wrapper">
-                                        <p class="name-post"><strong>{{ comment.user }}</strong> <span class="time-elapse">2 minutes ago</span></p>
+                                        <p class="name-post"><strong>{{ comment.user }}</strong> <span class="time-elapse">{{ comment.date_created|timesince }}</span></p>
                                         <p class="comment-post">{{ comment.comment}}</p>
-                                        <span class="comment-del"><a href="">Delete</a></span>
+                                        <span class="comment-del"><a class="luhh" href="{% url 'comment_delete' comment.id %}">Delete</a></span>
                                     </div>
                                 </div>
                                 {% endfor %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect,Http404
 from .models import Boardlist,Board, BoardMember, Card,User, BoardMember, Profile, Invite, CardComment
-from django.utils import timezone
+from django.utils import timezone, dateparse
 from django.views.generic import TemplateView
 from django.views import View
 from django.contrib.auth import authenticate,login,logout
@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.mail import BadHeaderError, send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.utils.timesince import timesince
 
 from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm
 from .mixins import LoggedInAuthMixin
@@ -280,4 +281,13 @@ class PostCommentView(TemplateView):
         )
         # obj = serializers.serialize('json', [obj,])
         # import pdb; pdb.set_trace()
-        return JsonResponse({'user':obj.user.username, 'comment': obj.comment})
+        return JsonResponse({'user':obj.user.username, 'comment': obj.comment, 'time':timesince(obj.date_created) })
+
+class DeleteComment(View):
+
+    def post(self, *args, **kwargs):
+        comment_id = kwargs.get('comment_id')
+        comment = CardComment.objects.get(id = comment_id)
+        comment.delete()
+        import pdb; pdb.set_trace()
+        return HttpResponse("deleted")
