@@ -24,6 +24,7 @@
     });
   }
 
+
   $('#addlistform').on('submit',function(e){
     e.preventDefault();
     var url = $(this).attr('action');
@@ -88,6 +89,7 @@
     return cookieValue;
 }
 
+
   $(document).on('shown.bs.modal', '#cardmodal', function(e){
     var elem = e.relatedTarget; // get click element
     var id = $(elem).data('id'); // get card id from the click element
@@ -123,9 +125,34 @@
           )
      })
   });
+  
+  $(document).on('submit', '.add-board', function(e){
+    e.preventDefault();
+    var href = $(this).children('a').attr('href');
+    console.log(href);
+    $.ajax({
+      url: $(this).attr('action'),
+      method: 'POST',
+      data: $(this).serialize()
+    }).done(function(data){
+      var res = JSON.parse(data)[0]
+      console.log(res);
+      $('.board-wrapper .card-deck').append(
+        `<div class="col col-md-3">
+          <div class="card">
+              <a href="/board/${res.pk}">
+                  <div class="card-header">
+                      ${ res.fields.title }
+                  </div>
+              </a>
+          </div>
+        </div>`
+      )
+    })
+  })
 
   $(document).on('submit','.add-member', function(e){
-    e.preventDefault;
+    e.preventDefault();
     var $form = $(this);
     var url = $form.attr('action');
     var csrftoken = getCookie('csrftoken');
@@ -206,6 +233,28 @@ $(document).on('focusout','.card-des-textarea',function(){
     }).done(function(){
       $(elem).parents(".card-list").remove();
     });
-
   });
+
+  $(document).on('submit','.post-form', function(e) {
+    e.preventDefault();
+    var csrftoken = getCookie('csrftoken');
+    var comment = $(this).children('textarea').val();
+    $.ajax({
+      url: $(this).attr('action'),
+      method: 'POST',
+      data:{'comment': comment, 'csrfmiddlewaretoken': csrftoken }
+    }).done(function(res){
+      console.log(res);
+      $('.commend').prepend(
+        `<div class="single-user">
+          <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+          <div class="modal-des-wrapper">
+              <p class="name-post"><strong>${res.user}</strong> <span class="time-elapse">2 minutes ago</span></p>
+              <p class="comment-post">${res.comment}</p>
+              <span class="comment-del"><a href="">Delete</a></span>
+          </div>
+        </div>`
+      )
+    })
+  })
 })();

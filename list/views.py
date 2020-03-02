@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect,Http404
-from .models import Boardlist,Board, BoardMember, Card,User, BoardMember, Profile, Invite
+from .models import Boardlist,Board, BoardMember, Card,User, BoardMember, Profile, Invite, CardComment
 from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views import View
@@ -32,7 +32,7 @@ class LoginView(LoggedInAuthMixin,TemplateView):
         if form.is_valid():
             if user is not None:
                 login(self.request, user)
-                # return redirect('dashboard')
+                return redirect('dashboard')
         context = {'form': form}
         return render(self.request, self.template_name, context)
 
@@ -47,8 +47,20 @@ class DashBoardView(TemplateView):
     template_name = 'board/dashb.html'
     
     def get(self, *args, **kwargs):
-        boards = Board.objects.all()
-        return render(self.request, self.template_name, {'boards':boards})
+        user = User.objects.get(username = self.request.user.username)
+        boards = Board.objects.filter(owner = user)
+        form = CreateBoardForm()
+        return render(self.request, self.template_name, {'boards':boards, 'form': form})
+
+    def post(self, *args, **kwargs):
+        form = CreateBoardForm(self.request.POST)
+        if form.is_valid():
+            newboard = form.save(commit=False)
+            newboard.owner = self.request.user
+            newboard.save()
+
+            serialized_object = serializers.serialize('json', [newboard,])
+            return JsonResponse(serialized_object, safe=False)
 
 class BoardDetailView(TemplateView):
     """ View for retreiving board detail 
@@ -144,8 +156,9 @@ class CardDetail(TemplateView):
     def get(self, *args, **kwargs):
         card_id = kwargs.get('card_id')
         card = get_object_or_404(Card, id=card_id)
-
-        return render(self.request,self.template_name,{'card':card})
+        comment_list = CardComment.objects.all().order_by('-date_created')
+        # import pdb; pdb.set_trace()
+        return render(self.request,self.template_name,{'card':card, 'comment_list': comment_list})
 
 class DeleteCard(TemplateView):
     template_name = 'board/list.html'
@@ -194,7 +207,8 @@ class CardUploadView(View):
         card = Card.objects.get(id=card_id)
         card.image = upload 
         card.card_image_name = upload.name
-        card.save() 
+        card.save()
+        import pdb; pdb.set_trace()
         return JsonResponse({'image_url': card.image.url, 'image_name': card.card_image_name, 'date_created': card.date_created}, safe=False)
 
 class AddMemberView(View):
@@ -203,35 +217,67 @@ class AddMemberView(View):
         board_id = kwargs.get('id')
         email = self.request.POST.get('email')
         queryset = User.objects.filter(email = email)
-        if queryset.exists():
-            board = Board.objects.get(id=board_id)
-            invite = Invite.objects.create(
-                email=email,
-                board=board,
-                invited_by=self.request.user
+        board = Board.objects.get(id=board_id)
+        invite = Invite.objects.create(
+            email=email,
+            board=board,
+            invited_by=self.request.user
+        )
+        recipient = Invite.objects.filter(email = email)
+        recipient = recipient.latest('date_invited')
+        # send message
+        recipient_email = recipient.email
+
+        from_email = settings.EMAIL_HOST_USER
+        subject, from_email, to = 'Board Invitation', from_email , recipient_email
+        text_content = 'This is an important message.'
+        html_content = render_to_string(
+            'board/mail.html',
+            {'token': recipient.token, 'request': self.request, 'board_id': board_id}
             )
-            recipient = Invite.objects.filter(email = email)
-            recipient = recipient.latest('date_invited')
-            # send message
-            recipient_email = recipient.email
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
-            from_email = settings.EMAIL_HOST_USER
-            subject, from_email, to = 'Board Invitation', from_email , recipient_email
-            text_content = 'This is an important message.'
-            html_content = render_to_string(
-                'board/mail.html',
-                {'token': recipient.token, 'request': self.request, 'board_id': board_id}
-                )
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
-
-            return HttpResponse("Message Sent")
+        return JsonResponse({"message":"Message Sent!"})
 
 class UserConfirmationView(TemplateView):
     template_name = 'board/userconfirm.html'
 
+    def get(self, *args, **kwargs):
+        board_id = kwargs.get('board_id')
+        token = kwargs.get('token')
+        user = User.objects.all()
+        board = Board.objects.get(id=board_id)
+
+        confirm = Invite.objects.get(token = token)
+        new_member = User.objects.get(email = confirm.email)
+        confirm.is_confirmed = True
+        confirm.save()
+        BoardMember.objects.create(
+            board = board,
+            member = new_member
+        )
+        print("User Confirmation Success")
+
+        if self.request.user.is_authenticated:
+            return redirect('detail', id = board_id)
+        else:
+            return render(self.request, self.template_name, {})
+
+class PostCommentView(TemplateView):
+    template_name = 'board/modalcard.html'
+
+
     def post(self, *args, **kwargs):
-        import pdb; pdb.set_trace()
-        print("asd")
-        return render(self.request, self.template_name, {})
+        card_id = kwargs.get('card_id')
+        comment = self.request.POST.get('comment')
+        card = Card.objects.get(id = card_id)
+        obj = CardComment.objects.create(
+            user = self.request.user,
+            comment = comment,
+            card = card
+        )
+        # obj = serializers.serialize('json', [obj,])
+        # import pdb; pdb.set_trace()
+        return JsonResponse({'user':obj.user.username, 'comment': obj.comment})

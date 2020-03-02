@@ -309,3 +309,49 @@ font-size: 14px;
 .add-member{
   margin-bottom: 0;
 }
+.name-post{
+  display: flex !important;
+  align-items: center;
+  margin-bottom: 2px;
+  font-size: 14px;
+}
+.time-elapse{
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  margin-left: 12px;
+  color: gray;
+}
+.comment-post{
+  background-color: #fff;
+  border: 1px solid #dedede;
+  border-radius: 5px;
+  padding: 12px;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+.user-post-image{
+  top: 50% !important;
+  height: 35px;
+  width: 35px;
+  position: absolute;
+  border-radius: 50%;
+  left: 8px;
+}
+#activity-textarea{
+  background-color: #fff;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+}
+.comment-wrapper{
+  width: 100%;
+}
+.comment-del a{
+  font-size: 15px;
+  color: gray;
+  text-decoration: underline !important;
+  float: right;
+}
+.single-user{
+  margin-bottom: 15px;
+}

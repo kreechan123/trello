@@ -17,7 +17,7 @@
                         <div class="modal-body" style="width: 100%;">
                             <i class="fa fa-bars" aria-hidden="true"></i>
                             <div class="modal-des-wrapper">
-                                <span class="modal-des-title">Description</span><br>
+                                <span class="modal-des-title"> <strong> Description</strong></span><br>
                                 <span class="modal-des">{{card.description}}</span>  
                                 <div class="des-wrapper">
                                     <textarea class="card-des-textarea" rows="3" data-card="{{card.id}}" data-url="{% url 'card_des' card.id %}" placeholder="Add a more detailed description">{{card.description}}</textarea>
@@ -50,14 +50,32 @@
                     <div class="col-md-12">
                         <div class="modal-myheader">
                             <i class="fa fa-list" aria-hidden="true"></i>
+                            <div class=" user-post-image"></div>
                             <div class="modal-des-wrapper">
-                                <p>Activity</p>
-                                <textarea placeholder="Write a comment"></textarea>
+                                <p> <strong> Activity</strong></p>
+                                <form action="{% url 'post_comment' card.id %}" method="post" class="post-form">{% csrf_token %}
+                                    <textarea name="comment" placeholder="Write a comment.."></textarea>
+                                    <button type="submit" class="btn btn-success btn-sm float-right">Save</button>
+                                </form>
                             </div>
                         </div>
                     </div>
-                    
-                    
+                    <div class="comment-wrapper">
+                        <div class="col-md-12">
+                            <div class="modal-myheader commend">
+                                {% for comment in comment_list %}
+                                <div class="single-user">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                    <div class="modal-des-wrapper">
+                                        <p class="name-post"><strong>{{ comment.user }}</strong> <span class="time-elapse">2 minutes ago</span></p>
+                                        <p class="comment-post">{{ comment.comment}}</p>
+                                        <span class="comment-del"><a href="">Delete</a></span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
                 </div>  
             </div>
             <div class="col-md-3">

@@ -22,6 +22,7 @@ from list.views import (
     CardUploadView,
     AddMemberView,
     UserConfirmationView,
+    PostCommentView,
 )
 
 
@@ -43,6 +44,7 @@ urlpatterns = [
     path('card/<int:card_id>/pos/', CardPositionView.as_view(), name='card_position'),
     path('card/<int:card_id>/des/', CardDescriptionView.as_view(), name='card_des'),
     path('card/<int:card_id>/upload/', CardUploadView.as_view(), name='card_upload'),
+    path('card/<int:card_id>/comment/', PostCommentView.as_view(), name='post_comment'),
     path('board/<int:id>/addmember/', AddMemberView.as_view(), name='add_member'),
     path('confirm/<uuid:token>/<int:board_id>/', UserConfirmationView.as_view(), name='confirm'),
 

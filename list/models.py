@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# from list.models import Boardlist, Board, BoardMember, Card, Profile, User
+# from list.models import Boardlist, Board, BoardMember, Card, Profile, User, CardComment
 
 def avatar(instance, filename):
     return '/'.join(['avatars', instance.board.board.title, filename])
@@ -94,4 +94,11 @@ class Invite(models.Model):
     date_invited = models.DateTimeField(auto_now_add=True)
     is_confirmed = models.BooleanField(default=False)
 
-
+class CardComment(models.Model):
+    """CardComment Model
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank="True")
+    comment = models.TextField(max_length=200, blank=True, null=True)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE,null=True, blank="True")
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
