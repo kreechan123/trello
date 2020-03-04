@@ -2,7 +2,9 @@
   'use strict';
 
   var id = $('#lists').data('board');
-  var lists_url =  `/board/${id}/lists/`;
+  if(id) {
+    var lists_url =  `/board/${id}/lists/`;
+  }
 
   $.ajax({
     url: lists_url
@@ -29,10 +31,14 @@
     e.preventDefault();
     var url = $(this).attr('action');
     var form = $(this);
+    var board = $('#lists').data('board');
+    var ser = $(this).serializeArray();
+    ser.push({name:'board', value: board});
+    console.log(ser);
     $.ajax({
         url:url,
         method:'post',
-        data:$(this).serialize(),
+        data: ser,
         success:function(data){
           var res = JSON.parse(data)[0];
           form.trigger('reset');
@@ -40,7 +46,7 @@
           var formwrap = $('.card-btn-wrapper').html();
           $("#lists").append(`
             <div class="card card-list list-container" data-list-id="${ res.pk }">
-            <span class="list-title">${res.fields.title}</span>
+            <span class="list-title" contenteditable="true" data-url="/card/${ res.pk }/edit/" csrf="${csrftoken}" data-title="${res.fields.title}">${res.fields.title}</span>
             <div class="card-wrapper connectedSortable" data-list-id="{{ list.id }}">
         
             </div>
@@ -71,6 +77,17 @@
             </div>`
             )
          },
+         error: function(data){
+          $('.error').removeClass('hide-inp').text(data.responseJSON.error);
+          $('[data-toggle="popover"]').popover({
+            container: 'body',
+            content: data.responseJSON.error,
+            viewport: { selector: '#lists', padding: 5 },
+            delay: {show: 500, hide: 100},
+            placement: "right",
+          });
+          $('[data-toggle="popover"]').popover('show');
+         }
      });
   });
   function getCookie(name) {
@@ -109,7 +126,6 @@
     // select element that where loaded via ajax    e.preventDefault();
     var url = $(this).attr('action');
     var cardwrap = $(this).parents('.list-container').find('.card-wrapper');
-    console.log(form);
     $.ajax({
         url:url,
         method:'post',
@@ -128,23 +144,22 @@
   
   $(document).on('submit', '.add-board', function(e){
     e.preventDefault();
-    var href = $(this).children('a').attr('href');
-    console.log(href);
+    var href = $(this).attr('action');
     $.ajax({
       url: $(this).attr('action'),
       method: 'POST',
       data: $(this).serialize()
     }).done(function(data){
       var res = JSON.parse(data)[0]
-      console.log(res);
       $('.board-wrapper .card-deck').append(
-        `<div class="col col-md-3">
+        `<div class="col col-md-3 single-board" style="margin-bottom: 15px;">
           <div class="card">
               <a href="/board/${res.pk}">
                   <div class="card-header">
                       ${ res.fields.title }
                   </div>
               </a>
+              <a href="/board/${res.pk}/delete/" class="btn btn-sm btn-danger btn-block btn-delete">Delete</a>
           </div>
         </div>`
       )
@@ -223,10 +238,11 @@ $(document).on('focusout','.card-des-textarea',function(){
 
   
   $(document).on('click', '.delbtn', function(e){
-    // select element that where loaded via ajax
     e.preventDefault();
     var url = $(this).data('url');
     var elem = $(this);
+
+    console.log(url, elem);
     $.ajax({
       url:url,
       method: 'get',
@@ -239,19 +255,20 @@ $(document).on('focusout','.card-des-textarea',function(){
     e.preventDefault();
     var csrftoken = getCookie('csrftoken');
     var comment = $(this).children('textarea').val();
+    var $elem = $(this);
     $.ajax({
       url: $(this).attr('action'),
       method: 'POST',
       data:{'comment': comment, 'csrfmiddlewaretoken': csrftoken }
     }).done(function(res){
-      console.log(res);
+      $elem.children('textarea').val('');
       $('.commend').prepend(
         `<div class="single-user">
           <i class="fa fa-user-circle-o" aria-hidden="true"></i>
           <div class="modal-des-wrapper">
               <p class="name-post"><strong>${res.user}</strong> <span class="time-elapse">${res.time}</span></p>
               <p class="comment-post">${res.comment}</p>
-              <span class="comment-del"><a href="">Delete</a></span>
+              <span class="comment-del"><a href="/card/${res.id}/comment/delete/">Delete</a></span>
           </div>
         </div>`
       )
@@ -260,12 +277,27 @@ $(document).on('focusout','.card-des-textarea',function(){
     $(document).on('click','.comment-del a', function(e) {
     e.preventDefault();
     var csrftoken = getCookie('csrftoken');
+    var $elem = $(this);
     $.ajax({
       url: $(this).attr('href'),
       method: 'POST',
       data: {'csrfmiddlewaretoken': csrftoken }
     }).done(function(res){
-      console.log(res);
+      $elem.parents('.single-user').remove();
     })
   })
+    $(document).on('click','.btn-delete', function(e) {
+    e.preventDefault();
+    var csrftoken = getCookie('csrftoken');
+    var $elem = $(this);
+    $.ajax({
+      url: $(this).attr('href'),
+      method: 'POST',
+      data: {'csrfmiddlewaretoken': csrftoken }
+    }).done(function(res){
+      console.log($(this));
+      $elem.parents('.single-board').remove();
+    })
+  })
+
 })();

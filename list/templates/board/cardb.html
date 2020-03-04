@@ -1,6 +1,6 @@
 {%  block content %}
     {% for card in cards %}
-    <div class="card-each-wrap" data-position='{{card.position}}'>
+    <div class="card-each-wrap" data-position='0' data-id="{{card.id}}">
         {% if card.image %}
     		<img class="card-image" src="{{ card.image.url }}">
     	{% endif %}
@@ -8,11 +8,11 @@
         <a href="{% url 'card_delete' card.id %}" class="card-delete" data-id={{card.id}}><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
     </div>
     {% endfor %}
-    
     <!-- MODAL -->
 <div class="modal fade" id="cardmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <!-- Modal loaded -->
     </div>
 </div>
+
 {% endblock %}

@@ -1,6 +1,6 @@
 from django import forms
 from .models import Board, Boardlist, Card
-from django.forms import Textarea
+from django.forms import Textarea, TextInput
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=200)
@@ -15,6 +15,9 @@ class AddListForm(forms.ModelForm):
         class Meta:
             model = Boardlist
             fields = ('title',)
+            widgets = {
+            'title': TextInput(attrs={'cols': 24, 'rows': 0, 'placeholder':'Enter list title ...'}),
+        }
 
 class AddCardForm(forms.ModelForm):
         class Meta:

@@ -22,6 +22,8 @@ a{
     margin-left: 5px;
     margin-right: 5px;
     position: relative;
+    display: inline-block;
+    vertical-align: top;
   }
   .card{
     border: none;
@@ -99,6 +101,7 @@ a{
     padding: 0.35rem;
     background-color: #ebecf0;
     margin: 0 20px;
+    display: inline-table;
   }
   .subcard form input{
     width: 100%;
@@ -110,7 +113,7 @@ a{
   }
 
   .lists {
-    display: flex;
+    display: inline-block !important;
   }
   .list-container {
     width: 200px;
@@ -133,6 +136,7 @@ a{
   .dropdown{
     position: absolute;
     right: 10px;
+    top: 0;
   }
   .dropdown .btn-sm{
     box-shadow: none;
@@ -142,6 +146,8 @@ a{
     font-size: 14px;
     margin-bottom: 10px;
     width: 90%;
+    display: inline-block;
+    padding: 5px 2px;
   }
   .add-card{
     bottom: 5px;
@@ -201,6 +207,9 @@ a{
   }
   .modal-title-wrapper, .modal-des-wrapper{
     padding-left: 35px;
+  }
+  .des-wrapper{
+    display: block;
   }
   .modal-des-wrapper textarea{
     background-color: #eaecef;
@@ -354,4 +363,10 @@ font-size: 14px;
 }
 .single-user{
   margin-bottom: 15px;
+  position: relative;
+}
+.single-user i {
+  top: 34px;
+  font-size: 28px;
+  left: -5px;
 }

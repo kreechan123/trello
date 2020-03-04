@@ -4,19 +4,20 @@ from django.utils import timezone, dateparse
 from django.views.generic import TemplateView
 from django.views import View
 from django.contrib.auth import authenticate,login,logout
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound
 from django.core.mail import BadHeaderError, send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.timesince import timesince
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from .mixins import BoardPermissionMixin
 
 from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm
-from .mixins import LoggedInAuthMixin
 from django.core import serializers
 
 
 # New Code Below
-class LoginView(LoggedInAuthMixin,TemplateView):
+class LoginView(TemplateView):
     template_name = 'list/login.html'
     form = LoginForm
 
@@ -33,7 +34,11 @@ class LoginView(LoggedInAuthMixin,TemplateView):
         if form.is_valid():
             if user is not None:
                 login(self.request, user)
-                return redirect('dashboard')
+                next_url = self.request.GET.get('next')
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return redirect('dashboard')
         context = {'form': form}
         return render(self.request, self.template_name, context)
 
@@ -44,8 +49,9 @@ class LogoutView(TemplateView):
         logout(self.request)
         return render(self.request, self.template_name)
 
-class DashBoardView(TemplateView):
+class DashBoardView(LoginRequiredMixin, TemplateView):
     template_name = 'board/dashb.html'
+    login_url = 'index'
     
     def get(self, *args, **kwargs):
         user = User.objects.get(username = self.request.user.username)
@@ -63,10 +69,12 @@ class DashBoardView(TemplateView):
             serialized_object = serializers.serialize('json', [newboard,])
             return JsonResponse(serialized_object, safe=False)
 
-class BoardDetailView(TemplateView):
+
+class BoardDetailView(LoginRequiredMixin, BoardPermissionMixin, TemplateView):
     """ View for retreiving board detail 
     """
     template_name = 'board/detail.html'
+    login_url = 'index'
 
     def get(self, *args, **kwargs):
         board = get_object_or_404(Board, id=kwargs.get('id'))
@@ -85,13 +93,23 @@ class BoardDetailView(TemplateView):
     def post(self, *args, **kwargs):
         id = kwargs.get('id')
         form = AddListForm(self.request.POST)
-        if form.is_valid():
-            add = form.save(commit=False)
-            add.board = Board.objects.get(id=id)
-            add.save()
-            
-            serialized_object = serializers.serialize('json', [add,])
-            return JsonResponse(serialized_object, safe=False)
+        board = self.request.POST.get('board')
+        title = self.request.POST.get('title')
+        board = Board.objects.get(id = board)
+        obj = Boardlist.objects.filter(title = title, board = board)
+        # import pdb; pdb.set_trace()
+        if not obj:
+            if form.is_valid():
+                add = form.save(commit=False)
+                add.board = Board.objects.get(id=id)
+                add.save()
+                serialized_object = serializers.serialize('json', [add,])
+                return JsonResponse(serialized_object, safe=False)
+        else:
+            # return HttpResponseNotFound('<h1>Title already exist ;p</h1>')
+            response = JsonResponse({"error": "Title already exist"})
+            response.status_code = 403
+            return response
             
         return render(self.request, self.template_name, {'form':form,})
     
@@ -100,12 +118,14 @@ class BoardListView(TemplateView):
     """ View for retreiving the lists of Board lists
     """
     template_name = 'board/list.html'
+    
 
     def get(self, *args, **kwargs):
         board = get_object_or_404(Board, id=kwargs.get('id'))
         if not  self.request.is_ajax():
             raise Http404
         board_id = kwargs.get('id')
+        # import pdb; pdb.set_trace()
         lists = Boardlist.objects.filter(board__id=board_id)
         add_card_form = AddCardForm()
         return render(
@@ -157,9 +177,8 @@ class CardDetail(TemplateView):
     def get(self, *args, **kwargs):
         card_id = kwargs.get('card_id')
         card = get_object_or_404(Card, id=card_id)
-        comment_list = CardComment.objects.all().order_by('-date_created')
-        # import pdb; pdb.set_trace()
-        return render(self.request,self.template_name,{'card':card, 'comment_list': comment_list})
+        comment_lists = CardComment.objects.filter(card_id = card_id).order_by('-date_created')
+        return render(self.request,self.template_name,{'card':card, 'comment_lists': comment_lists})
 
 class DeleteCard(TemplateView):
     template_name = 'board/list.html'
@@ -184,8 +203,13 @@ class CardPositionView(View):
 
     def post(self, *args, **kwargs):
         list_id = kwargs.get('card_id')
-        card = Card.objects.get(id=list_id)
+        position = self.request.POST.get('position')
+        card_id = self.request.POST.get('card_id')
+
+        card = Card.objects.get(id=card_id)
         newlist = self.request.POST.get('board')
+        # import pdb; pdb.set_trace()
+        card.position = position
         card.board_id = newlist
         card.save()
         return JsonResponse({})
@@ -209,7 +233,7 @@ class CardUploadView(View):
         card.image = upload 
         card.card_image_name = upload.name
         card.save()
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         return JsonResponse({'image_url': card.image.url, 'image_name': card.card_image_name, 'date_created': card.date_created}, safe=False)
 
 class AddMemberView(View):
@@ -242,13 +266,13 @@ class AddMemberView(View):
 
         return JsonResponse({"message":"Message Sent!"})
 
-class UserConfirmationView(TemplateView):
+class UserConfirmationView(LoginRequiredMixin,TemplateView):
     template_name = 'board/userconfirm.html'
+    login_url = 'index'
 
     def get(self, *args, **kwargs):
         board_id = kwargs.get('board_id')
         token = kwargs.get('token')
-        user = User.objects.all()
         board = Board.objects.get(id=board_id)
 
         confirm = Invite.objects.get(token = token)
@@ -266,10 +290,10 @@ class UserConfirmationView(TemplateView):
         else:
             return render(self.request, self.template_name, {})
 
-class PostCommentView(TemplateView):
+class PostCommentView(LoginRequiredMixin, TemplateView):
     template_name = 'board/modalcard.html'
-
-
+    login_url = 'index'
+    
     def post(self, *args, **kwargs):
         card_id = kwargs.get('card_id')
         comment = self.request.POST.get('comment')
@@ -279,9 +303,7 @@ class PostCommentView(TemplateView):
             comment = comment,
             card = card
         )
-        # obj = serializers.serialize('json', [obj,])
-        # import pdb; pdb.set_trace()
-        return JsonResponse({'user':obj.user.username, 'comment': obj.comment, 'time':timesince(obj.date_created) })
+        return JsonResponse({'id':obj.id, 'user':obj.user.username, 'comment': obj.comment, 'time':timesince(obj.date_created) })
 
 class DeleteComment(View):
 
@@ -289,5 +311,12 @@ class DeleteComment(View):
         comment_id = kwargs.get('comment_id')
         comment = CardComment.objects.get(id = comment_id)
         comment.delete()
-        import pdb; pdb.set_trace()
+        return HttpResponse("deleted")
+
+class BoardDelete(View):
+
+    def post(self, *args, **kwargs):
+        board_id = kwargs.get('board_id')
+        board = Board.objects.get(id = board_id)
+        board.delete()
         return HttpResponse("deleted")

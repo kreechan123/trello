@@ -4,7 +4,7 @@
 
 <div class="col-md-12 member-board">
     <span><strong>{{board.title}}</strong></span>
-    <span>Members:</span>
+    <!-- <span>Members:</span> -->
     <!-- {% for member in members %}
         <span>{{member.members}}, </span>
         <h2> {{member.members.user.profile.bio}} </h2>
@@ -25,11 +25,12 @@
     
         <div class="addlistbtn">
             <div class="addhdn">
-                <form action="{% url 'detail' board.id %}" method="POST" id="addlistform">
+                <form action="{% url 'detail' board.id %}" method="POST" id="addlistform" data-toggle="popover">
+                    <span data-container="body"></span>
                     {% csrf_token %}
                     {{ form.title }}
                     <br>
-                    <button type="submit" class="btn btn-success btn-card">Add List</button>
+                    <button type="submit" class="btn btn-success btn-card btn-block">Add List</button>
                 </form>
             </div>
         </div>

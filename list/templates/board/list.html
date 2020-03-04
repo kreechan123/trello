@@ -28,8 +28,7 @@
                 {% csrf_token %}
                 <div class="card-btn-wrapper">
                     {{add_card_form.title}}
-                    <button type="submit" class="btn btn-success ts">Add Card</button>
-                    <!-- <a href=""><span class="ui-icon ui-icon-closethick"></span></a> -->
+                    <button type="submit" class="btn btn-success ts btn-block btn-sm">Add Card</button>
                 </div>
             </form>
         </div>
@@ -40,35 +39,33 @@
 
 <script>
 
-    // autosize($('textarea'));
-
+    autosize($('textarea'));
+    
     $(".connectedSortable" ).sortable({
         connectWith: ".connectedSortable",
-        receive:function(event, ui){
+        update:function(event, ui){
             var elem = event.target;
             var id = ui.item.find('.class-card').data('id');
             var new_id = $(elem).data('list-id');
             var url = `/card/${id}/pos/`;
             var csrf = $(elem).siblings('.list-title').attr('csrf');
-            // console.log();
-            
-            ajaxCall(url,new_id,csrf);
+            var test = $(elem).children('.card-each-wrap');
+            $(test).each(function(index){
+                id = $(this).attr('data-id')
+                $(this).attr('data-position', index)
+                console.log("Card id: ",id, "with the position of: ",index);
+                ajaxCall(url,new_id,csrf, index, id);
+            });
         }
     })
 
-     function ajaxCall(url,new_id,csrf){
+     function ajaxCall(url,new_id,csrf,index,id){
         $.ajax({
                 url:url,
                 method: 'post',
-                data: {'board': new_id, 'csrfmiddlewaretoken': csrf}
+                data: {'board': new_id, 'csrfmiddlewaretoken': csrf, 'position': index, 'card_id':id}
             }).done(function(){
 
         })
      }
-     $(this).keypress(function (e) {
-        if (e.which == 13) {
-        $('form.card-form').submit();
-        return false;    //<---- Add this line
-        }
-    });
 </script>
