@@ -25,9 +25,6 @@ a{
     display: inline-block;
     vertical-align: top;
   }
-  .card{
-    border: none;
-  }
   .card-body{
     padding: 0.35rem;
   }
@@ -45,8 +42,10 @@ a{
     margin: 0 0 9px;
     box-shadow: 0px 0.8px 1px #15151559;
     font-size: 14px;
-    
     position: relative;
+  }
+  .card-wrapper{
+    padding: 10px 0 0;
   }
   .card-each-wrap a{
     width: 85%;
@@ -118,24 +117,15 @@ a{
   .list-container {
     width: 200px;
     margin: 0 20px 0 0;
-    padding: 8px 10px;
+    padding: 10px;
   }
   .list-container p{
     display: inline-block;
     width: 100%;
   }
-  /* .delbtn{
-    position: absolute;
-    right: 12px;
-    top: 15px;
-    width: fit-content;
-    background-color: inherit !important;
-    border: none;
-    box-shadow: none !important;
-  } */
   .dropdown{
     position: absolute;
-    right: 10px;
+    right: 0;
     top: 0;
   }
   .dropdown .btn-sm{
@@ -144,10 +134,8 @@ a{
   .list-title{
     font-weight: bolder;
     font-size: 14px;
-    margin-bottom: 10px;
     width: 90%;
     display: inline-block;
-    padding: 5px 2px;
   }
   .add-card{
     bottom: 5px;
@@ -186,10 +174,7 @@ a{
     margin: 9px 0 8px;
     display: inline-block;
   }
-  /* .form-wrapper{
-    position: absolute;
-    bottom:0;
-  } */
+
   .form-wrapper textarea{
     cursor: auto;
     border-radius: 4px;
@@ -237,12 +222,7 @@ a{
     width: 100%;
     cursor: pointer;
   }
-/*  .class-card i{
-    position: absolute;
-    right: 5px;
-    top: 8px;
-    color: #6b778c;
-  }*/
+
 .card-image{
   width: 100%;
 }

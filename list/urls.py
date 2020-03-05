@@ -25,12 +25,14 @@ from list.views import (
     PostCommentView,
     DeleteComment,
     BoardDelete,
+    RegisterView,
 )
 
 
 urlpatterns = [
     path('', LoginView.as_view(), name="index"),
     path('logout/',LogoutView.as_view(), name="logout"),
+    path('signup/',RegisterView.as_view(), name="register"),
     
     path('boards/',DashBoardView.as_view(), name="dashboard"),
     path('board/<int:id>/', BoardDetailView.as_view(), name='detail'),

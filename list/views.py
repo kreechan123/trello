@@ -11,8 +11,9 @@ from django.template.loader import render_to_string
 from django.utils.timesince import timesince
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .mixins import BoardPermissionMixin
+from django.contrib import messages
 
-from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm
+from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm, RegisterForm
 from django.core import serializers
 
 
@@ -41,6 +42,28 @@ class LoginView(TemplateView):
                     return redirect('dashboard')
         context = {'form': form}
         return render(self.request, self.template_name, context)
+    
+
+class RegisterView(TemplateView):
+    template_name = 'board/register.html'
+
+    def get(self, *args, **kwargs):
+        form = RegisterForm(use_required_attribute=False)
+        # import pdb; pdb.set_trace()
+        return render(self.request, self.template_name, {'form': form})
+
+    def post(self, *args, **kwargs):
+        form = RegisterForm(self.request.POST)
+        username = form.fields['username']
+        # import pdb; pdb.set_trace()
+        # if form.has_error(username, code=None):
+        if form.is_valid():
+            form.save()
+            messages.success(self.request, 'Registration Successful')
+            # else:
+            #     form = RegisterForm()
+        
+        return render(self.request, self.template_name, {})
 
 class LogoutView(TemplateView):
     template_name = 'list/logout.html'

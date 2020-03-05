@@ -1,22 +1,19 @@
 
 {% for list in blists %}
 
-<div class="card card-list list-container" data-list-id="{{ list.id }}">
+<div class="card card-list list-container border-0" data-list-id="{{ list.id }}">
 
     <span class="list-title" contenteditable="true" data-url="{% url 'list_update' list.id%}" csrf="{{ csrf_token }}" data-title="{{list.title}}">{{ list.title }}</span>
 
     <div class="card-wrapper connectedSortable" data-list-id="{{ list.id }}">
+        <span></span>
         <!-- dump cards -->
     </div>
     <div class="dropdown">
         <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+            <i class="fa fa-minus-square" aria-hidden="true"></i>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-            <div class="dropdown-divider"></div>
             <a href="#" class="delbtn dropdown-item" data-id="{{list.id}}" data-url="{% url 'list_delete' list_id=list.id %}">
                 Archive This List
             </a>

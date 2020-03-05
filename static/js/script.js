@@ -34,7 +34,6 @@
     var board = $('#lists').data('board');
     var ser = $(this).serializeArray();
     ser.push({name:'board', value: board});
-    console.log(ser);
     $.ajax({
         url:url,
         method:'post',
@@ -52,13 +51,9 @@
             </div>
             <div class="dropdown">
               <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                <i class="fa fa-minus-square" aria-hidden="true"></i>
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                  <div class="dropdown-divider"></div>
                   <a href="#" class="delbtn dropdown-item" data-id="${res.pk}" data-url="/board/${res.pk}/delete/">
                       Archive This List
                   </a>
@@ -136,7 +131,7 @@
           cardwrap.append(
             `<div class="card-each-wrap">
               	<a href="/card/${res.pk}/detail/" class="class-card" data-id="${res.pk}" data-toggle="modal" data-target="#cardmodal" title="${ res.fields.position }">${res.fields.title}</a>
-              	<a href="/card/${res.pk}/delete/" class="card-delete" data-id=${res.pk}><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+              	<a href="/card/${res.pk}/delete/" class="card-delete" data-id=${res.pk}><i class="fa fa-trash-o" aria-hidden="true"></i></a>
             </div>`
           )
      })
@@ -298,6 +293,11 @@ $(document).on('focusout','.card-des-textarea',function(){
       console.log($(this));
       $elem.parents('.single-board').remove();
     })
+  })
+
+  $(document).on('submit', '.register', function(){
+    
+
   })
 
 })();

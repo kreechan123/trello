@@ -12,7 +12,7 @@
     <div>
         <form action="{% url 'add_member' board.id %}" method="post" class="add-member form-inline">{% csrf_token %}
             <input type="email" name="email" class="form-control mb-2 mr-sm-2 test" placeholder="Add members..">
-            <button type="submit" class="btn btn-primary mb-2">Add</button>
+            <button type="submit" class="btn btn-primary mb-2">Invite</button>
         </form>
     </div>
 </div>
@@ -25,10 +25,11 @@
     
         <div class="addlistbtn">
             <div class="addhdn">
-                <form action="{% url 'detail' board.id %}" method="POST" id="addlistform" data-toggle="popover">
+                <form action="{% url 'detail' board.id %}" method="POST" id="addlistform">
                     <span data-container="body"></span>
                     {% csrf_token %}
                     {{ form.title }}
+                    <input type="text">
                     <br>
                     <button type="submit" class="btn btn-success btn-card btn-block">Add List</button>
                 </form>
