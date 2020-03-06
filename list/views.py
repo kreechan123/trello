@@ -46,24 +46,20 @@ class LoginView(TemplateView):
 
 class RegisterView(TemplateView):
     template_name = 'board/register.html'
+    form_class = RegisterForm
 
     def get(self, *args, **kwargs):
-        form = RegisterForm(use_required_attribute=False)
-        # import pdb; pdb.set_trace()
+        form = self.form_class()
         return render(self.request, self.template_name, {'form': form})
 
     def post(self, *args, **kwargs):
-        form = RegisterForm(self.request.POST)
-        username = form.fields['username']
-        # import pdb; pdb.set_trace()
-        # if form.has_error(username, code=None):
+        success = False
+        form = self.form_class(self.request.POST)
         if form.is_valid():
             form.save()
-            messages.success(self.request, 'Registration Successful')
-            # else:
-            #     form = RegisterForm()
-        
-        return render(self.request, self.template_name, {})
+            success = True
+        return render(self.request, self.template_name, {'form':form, 'success': success})
+
 
 class LogoutView(TemplateView):
     template_name = 'list/logout.html'
@@ -71,6 +67,7 @@ class LogoutView(TemplateView):
     def get(self, *arg, **kwargs):
         logout(self.request)
         return render(self.request, self.template_name)
+
 
 class DashBoardView(LoginRequiredMixin, TemplateView):
     template_name = 'board/dashb.html'
@@ -110,8 +107,7 @@ class BoardDetailView(LoginRequiredMixin, BoardPermissionMixin, TemplateView):
             'form':form,
             'members': members,
             'users' : users,
-            }
-            )
+            })
 
     def post(self, *args, **kwargs):
         id = kwargs.get('id')
@@ -129,11 +125,7 @@ class BoardDetailView(LoginRequiredMixin, BoardPermissionMixin, TemplateView):
                 serialized_object = serializers.serialize('json', [add,])
                 return JsonResponse(serialized_object, safe=False)
         else:
-            # return HttpResponseNotFound('<h1>Title already exist ;p</h1>')
-            response = JsonResponse({"error": "Title already exist"})
-            response.status_code = 403
-            return response
-            
+            return JsonResponse({"error": "Title already exist"}, status=403)
         return render(self.request, self.template_name, {'form':form,})
     
 
@@ -148,17 +140,13 @@ class BoardListView(TemplateView):
         if not  self.request.is_ajax():
             raise Http404
         board_id = kwargs.get('id')
-        # import pdb; pdb.set_trace()
         lists = Boardlist.objects.filter(board__id=board_id)
         add_card_form = AddCardForm()
-        return render(
-            self.request, 
-            self.template_name, 
-            {
-                'blists': lists, 
-                'add_card_form': add_card_form
-            }
-        )
+        context = {
+            'blists': lists, 
+            'add_card_form': add_card_form
+        }
+        return render(self.request, self.template_name, context)
     
 
 class CardListView(TemplateView):

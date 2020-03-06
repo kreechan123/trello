@@ -6,24 +6,9 @@ class BoardPermissionMixin:
 
     def dispatch(self, *args, **kwargs):
         board_id = kwargs.get('id')
-        user = self.request.user.id
         board = Board.objects.get(id=board_id)
-        members = BoardMember.objects.filter(board=board)
+        members = BoardMember.objects.filter(board=board, member=self.request.user)
 
-        if members.filter(member = user).exists():
+        if members.exists():
             return super().dispatch(self.request, *args, **kwargs)
-        else:
-            raise Http404
-
-
-# class BoardPermissionMixin():
-
-#     def dispatch(self, *args, **kwargs):
-#         board_id
-
-#         retriev all members sa board
-#         if item in lists:
-
-#         if user in Board member
-#             return True
-#         raise 404
+        raise Http404

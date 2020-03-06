@@ -350,3 +350,6 @@ font-size: 14px;
   font-size: 28px;
   left: -5px;
 }
+.invalid-feedback {
+  display: block !important;
+}
