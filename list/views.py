@@ -13,6 +13,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from .mixins import BoardPermissionMixin
 from django.contrib import messages
 
+
+
 from .forms import LoginForm, CreateBoardForm, AddListForm, AddCardForm, RegisterForm
 from django.core import serializers
 
@@ -80,6 +82,8 @@ class DashBoardView(LoginRequiredMixin, TemplateView):
         return render(self.request, self.template_name, {'boards':boards, 'form': form})
 
     def post(self, *args, **kwargs):
+        """POST for creating new Board"""
+
         form = CreateBoardForm(self.request.POST)
         if form.is_valid():
             newboard = form.save(commit=False)
@@ -109,14 +113,16 @@ class BoardDetailView(LoginRequiredMixin, BoardPermissionMixin, TemplateView):
             'users' : users,
             })
 
+
     def post(self, *args, **kwargs):
+        """POST for creating new list"""
+
         id = kwargs.get('id')
         form = AddListForm(self.request.POST)
         board = self.request.POST.get('board')
         title = self.request.POST.get('title')
         board = Board.objects.get(id = board)
         obj = Boardlist.objects.filter(title = title, board = board)
-        # import pdb; pdb.set_trace()
         if not obj:
             if form.is_valid():
                 add = form.save(commit=False)
@@ -168,6 +174,7 @@ class DeleteList(TemplateView):
         return HttpResponse('/')
 
 class AddCard(TemplateView):
+    """POST for adding new card"""
     template_name = 'board/list.html'
 
     def post(self, *args, **kwargs):
@@ -298,8 +305,7 @@ class UserConfirmationView(LoginRequiredMixin,TemplateView):
 
         if self.request.user.is_authenticated:
             return redirect('detail', id = board_id)
-        else:
-            return render(self.request, self.template_name, {})
+        return render(self.request, self.template_name, {})
 
 class PostCommentView(LoginRequiredMixin, TemplateView):
     template_name = 'board/modalcard.html'
